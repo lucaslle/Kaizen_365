@@ -242,6 +242,8 @@ mixin AppLocale {
   static const backupImported = 'backupImported';
   static const backupInvalid = 'backupInvalid';
   static const quoted = 'quoted';
+  static const widgetElapsed = 'widgetElapsed';
+  static const widgetCheckin = 'widgetCheckin';
 
   static const Map<String, dynamic> fr = {
     appName: 'Kaizen 365',
@@ -488,6 +490,8 @@ mixin AppLocale {
     backupImported: 'Sauvegarde restaurée',
     backupInvalid: 'Ce fichier n\'est pas une sauvegarde Kaizen 365.',
     quoted: '« %a »',
+    widgetElapsed: '%a de l\'année écoulée',
+    widgetCheckin: 'Faire un check-in',
   };
 
   static const Map<String, dynamic> en = {
@@ -735,5 +739,7 @@ mixin AppLocale {
     backupImported: 'Backup restored',
     backupInvalid: 'This file is not a Kaizen 365 backup.',
     quoted: '“%a”',
+    widgetElapsed: '%a of the year elapsed',
+    widgetCheckin: 'Post a check-in',
   };
 }

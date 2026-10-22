@@ -4,10 +4,9 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.RemoteViews
-import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
 
-/** Home screen widget: year score, time elapsed and next check-in, written by the app through home_widget. */
+/** Overview widget (4×2): year score, time elapsed and next check-in. */
 class KaizenWidgetProvider : HomeWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -15,20 +14,15 @@ class KaizenWidgetProvider : HomeWidgetProvider() {
         appWidgetIds: IntArray,
         widgetData: SharedPreferences,
     ) {
-        for (widgetId in appWidgetIds) {
-            val views = RemoteViews(context.packageName, R.layout.kaizen_widget).apply {
-                setTextViewText(R.id.widget_year, widgetData.getString("year", "Kaizen 365"))
-                setTextViewText(R.id.widget_score, widgetData.getString("score", "–"))
-                setTextViewText(R.id.widget_score_label, widgetData.getString("scoreLabel", ""))
-                setTextViewText(R.id.widget_elapsed, widgetData.getString("elapsed", "–"))
-                setTextViewText(R.id.widget_elapsed_label, widgetData.getString("elapsedLabel", ""))
-                setTextViewText(R.id.widget_next, widgetData.getString("next", ""))
-                setOnClickPendingIntent(
-                    R.id.widget_root,
-                    HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java),
-                )
-            }
-            appWidgetManager.updateAppWidget(widgetId, views)
+        val views = RemoteViews(context.packageName, R.layout.kaizen_widget).apply {
+            setTextViewText(R.id.widget_year, WidgetViews.text(widgetData, "year", "Kaizen 365"))
+            setTextViewText(R.id.widget_score, WidgetViews.text(widgetData, "score", "–"))
+            setTextViewText(R.id.widget_score_label, WidgetViews.text(widgetData, "scoreLabel"))
+            setTextViewText(R.id.widget_elapsed, WidgetViews.text(widgetData, "elapsed", "–"))
+            setTextViewText(R.id.widget_elapsed_label, WidgetViews.text(widgetData, "elapsedLabel"))
+            setTextViewText(R.id.widget_next, WidgetViews.text(widgetData, "next"))
+            setOnClickPendingIntent(R.id.widget_root, WidgetViews.openApp(context))
         }
+        appWidgetIds.forEach { appWidgetManager.updateAppWidget(it, views) }
     }
 }

@@ -6,9 +6,10 @@ import 'package:get_it/get_it.dart';
 
 import '../layers/functional/objectives/presentation/views/quick_checkin_sheet.dart';
 import '../layers/functional/profile/domain/use_cases/watch_reminder_taps_use_case.dart';
+import '../layers/technical/home_screen_widget/home_screen_widget.dart';
 import 'tab_cubit.dart';
 
-/// Opens the check-in flow when the user taps a reminder notification.
+/// Opens the check-in flow from a reminder notification or from the check-in home screen widget.
 class ReminderTapListener extends StatefulWidget {
   const ReminderTapListener({super.key, required this.child});
 
@@ -19,12 +20,14 @@ class ReminderTapListener extends StatefulWidget {
 }
 
 class _ReminderTapListenerState extends State<ReminderTapListener> {
-  StreamSubscription<void>? _subscription;
+  final _subscriptions = <StreamSubscription<void>>[];
 
   @override
   void initState() {
     super.initState();
-    _subscription = GetIt.I<WatchReminderTapsUseCase>()().listen((_) => _openCheckin());
+    _subscriptions
+      ..add(GetIt.I<WatchReminderTapsUseCase>()().listen((_) => _openCheckin()))
+      ..add(HomeScreenWidget.checkinRequests().listen((_) => _openCheckin()));
   }
 
   void _openCheckin() {
@@ -38,7 +41,9 @@ class _ReminderTapListenerState extends State<ReminderTapListener> {
 
   @override
   void dispose() {
-    _subscription?.cancel();
+    for (final subscription in _subscriptions) {
+      subscription.cancel();
+    }
     super.dispose();
   }
 

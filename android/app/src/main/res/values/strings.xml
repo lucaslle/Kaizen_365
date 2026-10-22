@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="widget_description">Ta progression de l\'année et ton prochain check-in</string>
+    <string name="widget_score_description">Ton score de l\'année en un coup d\'œil</string>
+    <string name="widget_checkin_description">Un raccourci pour faire un check-in</string>
+    <string name="widget_objectives_description">Tes objectifs et leur progression</string>
 </resources>
