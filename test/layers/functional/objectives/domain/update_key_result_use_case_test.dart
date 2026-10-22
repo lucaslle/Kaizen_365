@@ -20,7 +20,7 @@ void main() {
       Milestone(title: 'Semi', isDone: true),
     ],
   );
-  const objective = Objective(id: 'o1', title: 'Semi', domain: LifeDomain.health, keyResults: [km, plan]);
+  const objective = Objective(id: 'o1', title: 'Semi', domain: LifeDomain.health, year: 2026, keyResults: [km, plan]);
   late FakeObjectiveGateway gateway;
   DateTime clock() => DateTime(2026, 10, 13);
 

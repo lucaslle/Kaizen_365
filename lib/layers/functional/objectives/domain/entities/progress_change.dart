@@ -1,4 +1,4 @@
-enum ProgressChangeKind { created, value, percent, milestones, milestoneDone }
+enum ProgressChangeKind { created, carriedOver, value, percent, milestones, milestoneDone }
 
 class ProgressChange {
   const ProgressChange({

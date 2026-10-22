@@ -20,6 +20,7 @@ void main() {
     cubit = ObjectiveWizardCubit(
       CreateObjectiveUseCase(gateway, () => DateTime(2026, 10, 13)),
       UpdateObjectiveUseCase(gateway),
+      year: 2026,
     );
   });
 
@@ -55,6 +56,7 @@ void main() {
     expect(cubit.state.savedObjectiveId, created.id);
     expect(created.title, 'Lire 24 livres');
     expect(created.checkins, hasLength(1));
+    expect(created.year, 2026);
   });
 
   group('editing', () {
@@ -72,6 +74,7 @@ void main() {
       id: 'o1',
       title: 'Semi',
       domain: LifeDomain.health,
+      year: 2026,
       keyResults: const [km, plan],
       checkins: [Checkin(id: 'c1', date: DateTime(2026, 10, 1), text: 'Go')],
     );
@@ -91,6 +94,7 @@ void main() {
       final editCubit = ObjectiveWizardCubit(
         CreateObjectiveUseCase(gateway, () => DateTime(2026, 10, 13)),
         UpdateObjectiveUseCase(gateway),
+        year: 2026,
         editing: objective,
       );
       addTearDown(editCubit.close);
@@ -118,6 +122,7 @@ void main() {
       final editCubit = ObjectiveWizardCubit(
         CreateObjectiveUseCase(gateway, () => DateTime(2026, 10, 13)),
         UpdateObjectiveUseCase(gateway),
+        year: 2026,
         editing: objective,
       );
       addTearDown(editCubit.close);

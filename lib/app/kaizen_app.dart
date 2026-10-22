@@ -36,8 +36,13 @@ class KaizenApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => SettingsCubit(getIt(), getIt(), getIt(), getIt())..refreshReminders()),
-        BlocProvider(create: (_) => ObjectivesCubit(getIt(), getIt(), getIt(), getIt(), getIt(), getIt())..load()),
-        BlocProvider(create: (_) => YearReviewCubit(getIt(), getIt(), getIt(), getIt())..load()),
+        BlocProvider(
+          create: (_) =>
+              ObjectivesCubit(getIt(), getIt(), getIt(), getIt(), getIt(), getIt(), getIt(), getIt())..load(),
+        ),
+        BlocProvider(
+          create: (_) => YearReviewCubit(getIt(), getIt(), getIt(), getIt(), getIt(), getIt(), getIt())..load(),
+        ),
         BlocProvider(create: (_) => TabCubit()),
       ],
       child: BlocSelector<SettingsCubit, SettingsState, String>(

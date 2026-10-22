@@ -39,7 +39,7 @@ class CheckinBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final change = checkin.change;
-    final isCreation = change?.kind == ProgressChangeKind.created;
+    final isCreation = change?.kind == ProgressChangeKind.created || change?.kind == ProgressChangeKind.carriedOver;
     final text = isCreation ? context.changeText(change!) : checkin.text;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

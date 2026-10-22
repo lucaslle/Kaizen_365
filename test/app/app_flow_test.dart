@@ -15,11 +15,14 @@ import 'package:kaizen365/layers/functional/objectives/domain/gateways/year_revi
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/add_checkin_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/create_objective_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/delete_objective_use_case.dart';
+import 'package:kaizen365/layers/functional/objectives/domain/use_cases/get_active_year_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/get_year_review_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/save_year_review_use_case.dart';
+import 'package:kaizen365/layers/functional/objectives/domain/use_cases/start_next_year_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/toggle_milestone_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/update_objective_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/update_key_result_use_case.dart';
+import 'package:kaizen365/layers/functional/objectives/domain/use_cases/watch_active_year_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/watch_objectives_use_case.dart';
 import 'package:kaizen365/layers/functional/profile/domain/entities/user_settings.dart';
 import 'package:kaizen365/layers/functional/profile/domain/gateways/reminder_gateway.dart';
@@ -68,13 +71,30 @@ class _MemorySettingsGateway implements SettingsGateway {
 }
 
 class _MemoryYearReviewGateway implements YearReviewGateway {
-  YearReview review = const YearReview();
+  final _reviews = <int, YearReview>{};
+  final _yearChanges = StreamController<int>.broadcast();
+  var _activeYear = 2026;
 
   @override
-  YearReview load() => review;
+  int activeYear() => _activeYear;
 
   @override
-  Future<void> save(YearReview review) async => this.review = review;
+  Stream<int> watchActiveYear() async* {
+    yield _activeYear;
+    yield* _yearChanges.stream;
+  }
+
+  @override
+  Future<void> setActiveYear(int year) async {
+    _activeYear = year;
+    _yearChanges.add(year);
+  }
+
+  @override
+  YearReview load(int year) => _reviews[year] ?? const YearReview();
+
+  @override
+  Future<void> save(int year, YearReview review) async => _reviews[year] = review;
 }
 
 Future<void> _loadFont(String family, String asset) => (FontLoader(family)..addFont(rootBundle.load(asset))).load();
@@ -109,6 +129,9 @@ void main() {
       ..registerLazySingleton(() => UpdateKeyResultUseCase(getIt(), getIt()))
       ..registerLazySingleton(() => GetYearReviewUseCase(getIt()))
       ..registerLazySingleton(() => SaveYearReviewUseCase(getIt()))
+      ..registerLazySingleton(() => GetActiveYearUseCase(getIt()))
+      ..registerLazySingleton(() => WatchActiveYearUseCase(getIt()))
+      ..registerLazySingleton(() => StartNextYearUseCase(getIt(), getIt(), getIt()))
       ..registerLazySingleton(() => GetSettingsUseCase(getIt()))
       ..registerLazySingleton(() => ScheduleCheckinRemindersUseCase(getIt(), getIt()))
       ..registerLazySingleton(() => CompleteOnboardingUseCase(getIt(), getIt(), getIt()))
@@ -191,7 +214,21 @@ void main() {
     await tap('Bilan');
     await shot('17_review_night');
 
-    await tap('Objectifs');
+    final reviewList = find.ancestor(of: find.text('Objectif par objectif'), matching: find.byType(Scrollable)).first;
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+    await tester.fling(reviewList, const Offset(0, -3000), 4000);
+    await tester.pumpAndSettle();
+    await tap('Clôturer 2026');
+    expect(find.text('2026 est clôturée.'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+    await tester.fling(reviewList, const Offset(0, -3000), 4000);
+    await tester.pumpAndSettle();
+    await tap('Passer à 2027');
+    expect(find.text('Nouvelle année lancée avec 1 objectif reporté.'), findsOneWidget);
+    expect(find.text('Mes objectifs 2027'), findsOneWidget);
+    await shot('18_home_2027');
     await tap('Courir un semi-marathon');
     await tester.tap(find.byTooltip("Modifier l'objectif"));
     await tester.pumpAndSettle();
@@ -201,17 +238,18 @@ void main() {
     await tap('Passer');
     await tester.tap(find.byTooltip('Modifier Kilomètres courus'));
     await tester.pumpAndSettle();
-    await shot('18_edit_key_result');
+    await shot('19_edit_key_result');
     await tap('Enregistrer ce résultat clé');
     await tap('Suivant');
     await tap('Enregistrer');
     expect(find.text('Objectif modifié'), findsOneWidget);
+    expect(find.text('Reporté depuis 2026, avec sa progression.'), findsOneWidget);
     expect(find.text('Courir le semi de Lyon'), findsOneWidget);
     expect(find.text('10 / 900 km'), findsOneWidget);
 
     await tester.tap(find.byTooltip("Supprimer l'objectif"));
     await tester.pumpAndSettle();
-    await shot('19_delete_confirm');
+    await shot('20_delete_confirm');
     await tap('Supprimer');
     expect(find.text('Objectif supprimé'), findsOneWidget);
     expect(find.text("Aucun cap pour l'instant"), findsOneWidget);

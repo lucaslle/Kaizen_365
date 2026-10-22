@@ -16,6 +16,7 @@ void main() {
       id: 'o1',
       title: 'Épargner 6 000 €',
       domain: LifeDomain.finances,
+      year: 2026,
       why: 'Japon',
       keyResults: const [
         KeyResult(
@@ -59,5 +60,20 @@ void main() {
     expect(restored.keyResults.last.milestones.single.isDone, isTrue);
     expect(restored.checkins.first.change!.to, 4900);
     expect(restored.checkins.last.mood, isNull);
+  });
+
+  test('objectives saved before years were tracked take the year of their first check-in', () {
+    final legacy = {
+      'id': 'o1',
+      'title': 'Lire',
+      'domain': 'wellBeing',
+      'why': '',
+      'keyResults': <Object>[],
+      'checkins': [
+        {'id': 'c2', 'date': '2026-03-01T10:00:00.000', 'mood': null, 'text': 'Suite', 'change': null},
+        {'id': 'c1', 'date': '2025-12-30T10:00:00.000', 'mood': 'up', 'text': '', 'change': null},
+      ],
+    };
+    expect(ObjectiveDto.fromJson(legacy).year, 2025);
   });
 }

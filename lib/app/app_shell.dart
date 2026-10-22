@@ -41,7 +41,7 @@ class AppShell extends StatelessWidget {
                 onOpenProfile: () => ProfileView.open(context),
               ),
               const JournalView(),
-              YearReviewView(onPrepareNextYear: openWizard),
+              YearReviewView(onYearStarted: () => context.read<TabCubit>().selected(AppTab.objectives)),
             ],
           ),
         ),

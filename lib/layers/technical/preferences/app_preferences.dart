@@ -5,6 +5,8 @@ enum PreferenceKey {
   checkinRhythm,
   hasCompletedOnboarding,
   themeName,
+  activeYear,
+  yearReviews,
   isYearClosed,
   carriedObjectiveIds,
   reflectionProud,
@@ -23,8 +25,10 @@ class AppPreferences {
   String? getString(PreferenceKey key) => _prefs.getString(key.name);
   bool? getBool(PreferenceKey key) => _prefs.getBool(key.name);
   List<String>? getStringList(PreferenceKey key) => _prefs.getStringList(key.name);
+  int? getInt(PreferenceKey key) => _prefs.getInt(key.name);
 
   Future<void> setString(PreferenceKey key, String value) => _prefs.setString(key.name, value);
   Future<void> setBool(PreferenceKey key, bool value) => _prefs.setBool(key.name, value);
   Future<void> setStringList(PreferenceKey key, List<String> value) => _prefs.setStringList(key.name, value);
+  Future<void> setInt(PreferenceKey key, int value) => _prefs.setInt(key.name, value);
 }

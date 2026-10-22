@@ -9,11 +9,12 @@ import '../../domain/use_cases/update_objective_use_case.dart';
 import 'objective_wizard_state.dart';
 
 class ObjectiveWizardCubit extends Cubit<ObjectiveWizardState> {
-  ObjectiveWizardCubit(this._createObjective, this._updateObjective, {Objective? editing})
+  ObjectiveWizardCubit(this._createObjective, this._updateObjective, {required this.year, Objective? editing})
     : super(editing == null ? const ObjectiveWizardState() : ObjectiveWizardState.editing(editing));
 
   final CreateObjectiveUseCase _createObjective;
   final UpdateObjectiveUseCase _updateObjective;
+  final int year;
 
   void titleChanged(String title) => emit(state.copyWith(title: title));
 
@@ -37,6 +38,7 @@ class ObjectiveWizardCubit extends Cubit<ObjectiveWizardState> {
           ? await _createObjective(
               title: state.title,
               domain: state.domain,
+              year: year,
               why: state.why,
               keyResults: state.keyResults,
             )

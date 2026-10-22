@@ -27,15 +27,17 @@ class ObjectiveWizardView extends StatelessWidget {
 
   static Future<void> openEdit(BuildContext context, Objective objective) => _push(context, objective, null);
 
-  static Future<void> _push(BuildContext context, Objective? editing, String? reminderKey) =>
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => BlocProvider(
-            create: (_) => ObjectiveWizardCubit(GetIt.I(), GetIt.I(), editing: editing),
-            child: ObjectiveWizardView(reminderKey: reminderKey, year: DateTime.now().year),
-          ),
+  static Future<void> _push(BuildContext context, Objective? editing, String? reminderKey) {
+    final year = editing?.year ?? context.read<ObjectivesCubit>().state.activeYear;
+    return Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => BlocProvider(
+          create: (_) => ObjectiveWizardCubit(GetIt.I(), GetIt.I(), year: year, editing: editing),
+          child: ObjectiveWizardView(reminderKey: reminderKey, year: year),
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) => BlocConsumer<ObjectiveWizardCubit, ObjectiveWizardState>(

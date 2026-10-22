@@ -9,11 +9,14 @@ import '../layers/functional/objectives/domain/gateways/year_review_gateway.dart
 import '../layers/functional/objectives/domain/use_cases/add_checkin_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/create_objective_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/delete_objective_use_case.dart';
+import '../layers/functional/objectives/domain/use_cases/get_active_year_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/get_year_review_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/save_year_review_use_case.dart';
+import '../layers/functional/objectives/domain/use_cases/start_next_year_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/toggle_milestone_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/update_objective_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/update_key_result_use_case.dart';
+import '../layers/functional/objectives/domain/use_cases/watch_active_year_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/watch_objectives_use_case.dart';
 import '../layers/functional/profile/data/gateways/reminder_gateway_impl.dart';
 import '../layers/functional/profile/data/gateways/settings_gateway_impl.dart';
@@ -45,7 +48,7 @@ Future<void> initializeDependencies() async {
     ..registerLazySingleton<ObjectiveGateway>(
       () => ObjectiveGatewayImpl(ObjectiveLocalDataSource(getApplicationDocumentsDirectory)),
     )
-    ..registerLazySingleton<YearReviewGateway>(() => YearReviewGatewayImpl(getIt()))
+    ..registerLazySingleton<YearReviewGateway>(() => YearReviewGatewayImpl(getIt(), getIt()))
     ..registerLazySingleton<SettingsGateway>(() => SettingsGatewayImpl(getIt()))
     ..registerLazySingleton<ReminderGateway>(() => ReminderGatewayImpl(notifications))
     ..registerLazySingleton(() => WatchObjectivesUseCase(getIt()))
@@ -57,6 +60,9 @@ Future<void> initializeDependencies() async {
     ..registerLazySingleton(() => UpdateKeyResultUseCase(getIt(), getIt()))
     ..registerLazySingleton(() => GetYearReviewUseCase(getIt()))
     ..registerLazySingleton(() => SaveYearReviewUseCase(getIt()))
+    ..registerLazySingleton(() => GetActiveYearUseCase(getIt()))
+    ..registerLazySingleton(() => WatchActiveYearUseCase(getIt()))
+    ..registerLazySingleton(() => StartNextYearUseCase(getIt(), getIt(), getIt()))
     ..registerLazySingleton(() => GetSettingsUseCase(getIt()))
     ..registerLazySingleton(() => ScheduleCheckinRemindersUseCase(getIt(), getIt()))
     ..registerLazySingleton(() => CompleteOnboardingUseCase(getIt(), getIt(), getIt()))

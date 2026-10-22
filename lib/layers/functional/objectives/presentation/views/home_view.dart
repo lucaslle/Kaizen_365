@@ -68,7 +68,7 @@ class _HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final objectives = state.objectives;
-    final expected = expectedProgress(state.now);
+    final expected = expectedProgress(state.now, year: state.activeYear);
     final name = userName.trim();
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 112),
@@ -92,7 +92,7 @@ class _HomeContent extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Text(context.formatString(AppLocale.homeTitle, [state.now.year]), style: context.text.screenTitle),
+                  Text(context.formatString(AppLocale.homeTitle, [state.activeYear]), style: context.text.screenTitle),
                 ],
               ),
             ),
@@ -114,7 +114,7 @@ class _HomeContent extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 18),
-        YearCard(now: state.now, score: yearScore(objectives), expected: expected),
+        YearCard(now: state.now, year: state.activeYear, score: yearScore(objectives), expected: expected),
         const SizedBox(height: 18),
         if (objectives.isEmpty)
           EmptyObjectivesCard(onCreate: onCreateObjective)

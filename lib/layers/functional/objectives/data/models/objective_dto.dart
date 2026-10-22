@@ -11,19 +11,28 @@ abstract final class ObjectiveDto {
     'id': o.id,
     'title': o.title,
     'domain': o.domain.name,
+    'year': o.year,
     'why': o.why,
     'keyResults': [for (final k in o.keyResults) _keyResultToJson(k)],
     'checkins': [for (final c in o.checkins) _checkinToJson(c)],
   };
 
-  static Objective fromJson(Map<String, dynamic> json) => Objective(
-    id: json['id'] as String,
-    title: json['title'] as String,
-    domain: LifeDomain.values.byName(json['domain'] as String),
-    why: json['why'] as String? ?? '',
-    keyResults: [for (final k in json['keyResults'] as List) _keyResultFromJson(k as Map<String, dynamic>)],
-    checkins: [for (final c in json['checkins'] as List) _checkinFromJson(c as Map<String, dynamic>)],
-  );
+  static Objective fromJson(Map<String, dynamic> json) {
+    final checkins = [for (final c in json['checkins'] as List) _checkinFromJson(c as Map<String, dynamic>)];
+    return Objective(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      domain: LifeDomain.values.byName(json['domain'] as String),
+      year: json['year'] as int? ?? _creationYear(checkins),
+      why: json['why'] as String? ?? '',
+      keyResults: [for (final k in json['keyResults'] as List) _keyResultFromJson(k as Map<String, dynamic>)],
+      checkins: checkins,
+    );
+  }
+
+  /// Objectives saved before years were tracked belong to the year of their first check-in.
+  static int _creationYear(List<Checkin> checkins) =>
+      checkins.isEmpty ? DateTime.now().year : checkins.map((c) => c.date).reduce((a, b) => a.isBefore(b) ? a : b).year;
 
   static Map<String, dynamic> _keyResultToJson(KeyResult k) => {
     'id': k.id,

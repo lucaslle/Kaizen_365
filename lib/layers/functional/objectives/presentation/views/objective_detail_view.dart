@@ -51,7 +51,7 @@ class ObjectiveDetailView extends StatelessWidget {
         const SizedBox(width: 4),
       ],
       title: BlocSelector<ObjectivesCubit, ObjectivesState, int>(
-        selector: (state) => state.now.year,
+        selector: (state) => state.byId(objectiveId)?.year ?? state.activeYear,
         builder: (context, year) =>
             Text(context.formatString(AppLocale.detailOverline, [year]).toUpperCase(), style: context.text.overline),
       ),
@@ -60,7 +60,10 @@ class ObjectiveDetailView extends StatelessWidget {
       builder: (context, state) {
         final objective = state.byId(objectiveId);
         if (objective == null) return const SizedBox.shrink();
-        return _DetailContent(objective: objective, expected: expectedProgress(state.now));
+        return _DetailContent(
+          objective: objective,
+          expected: expectedProgress(state.now, year: objective.year),
+        );
       },
     ),
   );

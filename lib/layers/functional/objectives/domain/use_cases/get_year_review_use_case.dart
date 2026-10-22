@@ -6,5 +6,5 @@ class GetYearReviewUseCase {
 
   final YearReviewGateway _gateway;
 
-  YearReview call() => _gateway.load();
+  YearReview call(int year) => _gateway.load(year);
 }

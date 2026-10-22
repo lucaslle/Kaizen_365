@@ -9,18 +9,19 @@ import '../../../../technical/theme/app_palette.dart';
 import '../../domain/entities/progress.dart';
 
 class YearCard extends StatelessWidget {
-  const YearCard({super.key, required this.now, required this.score, required this.expected});
+  const YearCard({super.key, required this.now, required this.year, required this.score, required this.expected});
 
   final DateTime now;
+  final int year;
   final double score;
   final double expected;
 
   @override
   Widget build(BuildContext context) {
-    final day = dayOfYear(now);
-    final remaining = daysInYear(now.year) - day;
-    final currentMonth = now.month - 1;
-    final initials = Formatters.monthInitials(now.year);
+    final day = elapsedDays(year, now);
+    final remaining = daysInYear(year) - day;
+    final currentMonth = year == now.year ? now.month - 1 : -1;
+    final initials = Formatters.monthInitials(year);
     return AppCard(
       color: context.palette.inverse,
       hasBorder: false,
@@ -34,7 +35,7 @@ class YearCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                context.formatString(AppLocale.yearLabel, [now.year]).toUpperCase(),
+                context.formatString(AppLocale.yearLabel, [year]).toUpperCase(),
                 style: context.text.overline.copyWith(color: context.palette.inverseMuted),
               ),
               Text(

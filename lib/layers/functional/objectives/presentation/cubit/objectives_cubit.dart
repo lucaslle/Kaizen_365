@@ -10,8 +10,10 @@ import '../../domain/entities/mood.dart';
 import '../../domain/entities/objective.dart';
 import '../../domain/use_cases/add_checkin_use_case.dart';
 import '../../domain/use_cases/delete_objective_use_case.dart';
+import '../../domain/use_cases/get_active_year_use_case.dart';
 import '../../domain/use_cases/toggle_milestone_use_case.dart';
 import '../../domain/use_cases/update_key_result_use_case.dart';
+import '../../domain/use_cases/watch_active_year_use_case.dart';
 import '../../domain/use_cases/watch_objectives_use_case.dart';
 import 'objectives_state.dart';
 
@@ -22,26 +24,36 @@ class ObjectivesCubit extends Cubit<ObjectivesState> {
     this._updateKeyResult,
     this._addCheckin,
     this._deleteObjective,
+    this._watchActiveYear,
+    GetActiveYearUseCase getActiveYear,
     this._clock,
-  ) : super(ObjectivesState(now: _clock()));
+  ) : super(ObjectivesState(now: _clock(), activeYear: getActiveYear()));
 
   final WatchObjectivesUseCase _watchObjectives;
   final ToggleMilestoneUseCase _toggleMilestone;
   final UpdateKeyResultUseCase _updateKeyResult;
   final AddCheckinUseCase _addCheckin;
   final DeleteObjectiveUseCase _deleteObjective;
+  final WatchActiveYearUseCase _watchActiveYear;
   final Clock _clock;
   StreamSubscription<List<Objective>>? _subscription;
+  StreamSubscription<int>? _yearSubscription;
 
   void load() {
+    _watchYear();
     _subscription?.cancel();
     _subscription = _watchObjectives().listen(
-      (objectives) => emit(state.copyWith(status: ObjectivesStatus.ready, objectives: objectives, now: _clock())),
+      (objectives) => emit(state.copyWith(status: ObjectivesStatus.ready, allObjectives: objectives, now: _clock())),
       onError: (Object error, StackTrace stackTrace) {
         debugPrint('Objectives loading failed: $error\n$stackTrace');
         emit(state.copyWith(status: ObjectivesStatus.failure));
       },
     );
+  }
+
+  void _watchYear() {
+    _yearSubscription?.cancel();
+    _yearSubscription = _watchActiveYear().listen((year) => emit(state.copyWith(activeYear: year, now: _clock())));
   }
 
   Future<void> toggleMilestone(Objective objective, KeyResult keyResult, int index) => _guard(() async {
@@ -86,6 +98,7 @@ class ObjectivesCubit extends Cubit<ObjectivesState> {
   @override
   Future<void> close() async {
     await _subscription?.cancel();
+    await _yearSubscription?.cancel();
     return super.close();
   }
 }

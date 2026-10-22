@@ -6,5 +6,5 @@ class SaveYearReviewUseCase {
 
   final YearReviewGateway _gateway;
 
-  Future<void> call(YearReview review) => _gateway.save(review);
+  Future<void> call(int year, YearReview review) => _gateway.save(year, review);
 }

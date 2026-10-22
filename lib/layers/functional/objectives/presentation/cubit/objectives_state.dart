@@ -15,33 +15,52 @@ enum ObjectivesNotice {
 class ObjectivesState {
   const ObjectivesState({
     required this.now,
+    required this.activeYear,
     this.status = ObjectivesStatus.loading,
-    this.objectives = const [],
+    this.allObjectives = const [],
     this.notice,
     this.noticeId = 0,
   });
 
   final DateTime now;
+  final int activeYear;
   final ObjectivesStatus status;
-  final List<Objective> objectives;
+  final List<Objective> allObjectives;
   final ObjectivesNotice? notice;
   final int noticeId;
 
+  List<Objective> get objectives => [
+    for (final o in allObjectives)
+      if (o.year == activeYear) o,
+  ];
+
   Objective? byId(String id) {
-    for (final o in objectives) {
+    for (final o in allObjectives) {
       if (o.id == id) return o;
     }
     return null;
   }
 
-  ObjectivesState copyWith({DateTime? now, ObjectivesStatus? status, List<Objective>? objectives}) => ObjectivesState(
+  ObjectivesState copyWith({
+    DateTime? now,
+    int? activeYear,
+    ObjectivesStatus? status,
+    List<Objective>? allObjectives,
+  }) => ObjectivesState(
     now: now ?? this.now,
+    activeYear: activeYear ?? this.activeYear,
     status: status ?? this.status,
-    objectives: objectives ?? this.objectives,
+    allObjectives: allObjectives ?? this.allObjectives,
     notice: notice,
     noticeId: noticeId,
   );
 
-  ObjectivesState withNotice(ObjectivesNotice notice) =>
-      ObjectivesState(now: now, status: status, objectives: objectives, notice: notice, noticeId: noticeId + 1);
+  ObjectivesState withNotice(ObjectivesNotice notice) => ObjectivesState(
+    now: now,
+    activeYear: activeYear,
+    status: status,
+    allObjectives: allObjectives,
+    notice: notice,
+    noticeId: noticeId + 1,
+  );
 }

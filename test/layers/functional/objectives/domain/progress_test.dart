@@ -47,12 +47,13 @@ void main() {
       id: 'a',
       title: 'a',
       domain: LifeDomain.health,
+      year: 2026,
       keyResults: [
         KeyResult(id: '1', title: 't', type: KeyResultType.percent, value: 100),
         KeyResult(id: '2', title: 't', type: KeyResultType.percent, value: 0),
       ],
     );
-    const b = Objective(id: 'b', title: 'b', domain: LifeDomain.health);
+    const b = Objective(id: 'b', title: 'b', domain: LifeDomain.health, year: 2026);
     expect(objectiveProgress(a), 0.5);
     expect(objectiveProgress(b), 0);
     expect(yearScore([a, b]), 0.25);
@@ -72,5 +73,13 @@ void main() {
     expect(expectedProgress(DateTime(2026, 10, 13)), 286 / 365);
     expect(expectedProgress(DateTime(2028, 12, 31)), 1);
     expect(daysInYear(2028), 366);
+  });
+
+  test('expected progress and elapsed days are bounded for other years', () {
+    final now = DateTime(2026, 10, 13);
+    expect(expectedProgress(now, year: 2025), 1);
+    expect(expectedProgress(now, year: 2027), 0);
+    expect(expectedProgress(now, year: 2026), 286 / 365);
+    expect((elapsedDays(2025, now), elapsedDays(2026, now), elapsedDays(2027, now)), (365, 286, 0));
   });
 }

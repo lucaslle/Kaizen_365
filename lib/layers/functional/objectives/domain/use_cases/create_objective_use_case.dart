@@ -16,6 +16,7 @@ class CreateObjectiveUseCase {
   Future<Objective> call({
     required String title,
     required LifeDomain domain,
+    required int year,
     required String why,
     required List<KeyResult> keyResults,
   }) async {
@@ -25,6 +26,7 @@ class CreateObjectiveUseCase {
       id: id,
       title: title.trim(),
       domain: domain,
+      year: year,
       why: why.trim(),
       keyResults: keyResults,
       checkins: [

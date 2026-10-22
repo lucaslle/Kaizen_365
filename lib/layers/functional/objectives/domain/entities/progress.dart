@@ -6,7 +6,19 @@ int dayOfYear(DateTime now) => DateTime.utc(now.year, now.month, now.day).differ
 
 int daysInYear(int year) => DateTime.utc(year + 1).difference(DateTime.utc(year)).inDays;
 
-double expectedProgress(DateTime now) => dayOfYear(now) / daysInYear(now.year);
+/// Share of [year] already elapsed on [now]: 0 before it starts, 1 once it is over.
+double expectedProgress(DateTime now, {int? year}) => switch ((year ?? now.year).compareTo(now.year)) {
+  < 0 => 1,
+  > 0 => 0,
+  _ => dayOfYear(now) / daysInYear(now.year),
+};
+
+/// Day of [year] reached on [now], clamped to the year bounds.
+int elapsedDays(int year, DateTime now) => switch (year.compareTo(now.year)) {
+  < 0 => daysInYear(year),
+  > 0 => 0,
+  _ => dayOfYear(now),
+};
 
 double keyResultProgress(KeyResult k) {
   final raw = switch (k.type) {

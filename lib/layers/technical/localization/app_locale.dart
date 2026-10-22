@@ -194,6 +194,12 @@ mixin AppLocale {
   static const updateKeyResultDraft = 'updateKeyResultDraft';
   static const cancelKeyResultEdit = 'cancelKeyResultEdit';
   static const editItem = 'editItem';
+  static const changeCarriedOver = 'changeCarriedOver';
+  static const reviewOver = 'reviewOver';
+  static const reviewUpcoming = 'reviewUpcoming';
+  static const yearStartedNone = 'yearStartedNone';
+  static const yearStartedOne = 'yearStartedOne';
+  static const yearStartedMany = 'yearStartedMany';
 
   static const Map<String, dynamic> fr = {
     appName: 'Kaizen 365',
@@ -364,7 +370,7 @@ mixin AppLocale {
     carriedOne: '1 objectif reporté en %a, avec sa progression actuelle.',
     carriedMany: '%a objectifs reportés en %a, avec leur progression actuelle.',
     carriedNone: 'Aucun objectif reporté. Page blanche pour %a.',
-    prepareNext: 'Préparer %a',
+    prepareNext: 'Passer à %a',
     errorLoading: 'Impossible de charger tes objectifs.',
     errorSaving: 'L\'enregistrement a échoué. Réessaie.',
     reminderNotificationTitle: 'C\'est l\'heure du check-in',
@@ -391,5 +397,11 @@ mixin AppLocale {
     updateKeyResultDraft: 'Enregistrer ce résultat clé',
     cancelKeyResultEdit: 'Annuler la modification',
     editItem: 'Modifier %a',
+    changeCarriedOver: 'Reporté depuis %a, avec sa progression.',
+    reviewOver: 'L\'année %a est terminée. Clôture-la pour passer à %a.',
+    reviewUpcoming: '%a commence dans %a jours. Tu peux déjà préparer tes objectifs.',
+    yearStartedNone: 'Nouvelle année lancée. Page blanche !',
+    yearStartedOne: 'Nouvelle année lancée avec 1 objectif reporté.',
+    yearStartedMany: 'Nouvelle année lancée avec %a objectifs reportés.',
   };
 }

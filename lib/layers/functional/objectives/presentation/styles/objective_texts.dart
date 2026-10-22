@@ -42,6 +42,7 @@ extension ObjectiveTexts on BuildContext {
 
   String changeText(ProgressChange c) => switch (c.kind) {
     ProgressChangeKind.created => AppLocale.changeCreated.getString(this),
+    ProgressChangeKind.carriedOver => formatString(AppLocale.changeCarriedOver, [c.subject]),
     ProgressChangeKind.value => formatString(AppLocale.changeValue, [
       c.subject,
       Formatters.number(c.from),

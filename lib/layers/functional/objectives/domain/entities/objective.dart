@@ -7,6 +7,7 @@ class Objective {
     required this.id,
     required this.title,
     required this.domain,
+    required this.year,
     this.why = '',
     this.keyResults = const [],
     this.checkins = const [],
@@ -15,6 +16,7 @@ class Objective {
   final String id;
   final String title;
   final LifeDomain domain;
+  final int year;
   final String why;
   final List<KeyResult> keyResults;
   final List<Checkin> checkins;
@@ -22,6 +24,7 @@ class Objective {
   Objective copyWith({
     String? title,
     LifeDomain? domain,
+    int? year,
     String? why,
     List<KeyResult>? keyResults,
     List<Checkin>? checkins,
@@ -29,6 +32,7 @@ class Objective {
     id: id,
     title: title ?? this.title,
     domain: domain ?? this.domain,
+    year: year ?? this.year,
     why: why ?? this.why,
     keyResults: keyResults ?? this.keyResults,
     checkins: checkins ?? this.checkins,

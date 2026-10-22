@@ -12,14 +12,13 @@ import '../../../../technical/theme/app_palette.dart';
 import '../cubit/year_review_state.dart';
 
 class YearClosing extends StatelessWidget {
-  const YearClosing({super.key, required this.state, required this.onPrepareNextYear});
+  const YearClosing({super.key, required this.state});
 
   final YearReviewState state;
-  final VoidCallback onPrepareNextYear;
 
   @override
   Widget build(BuildContext context) {
-    final year = state.now.year;
+    final year = state.year;
     if (!state.review.isClosed) {
       return AppButton(
         label: context.formatString(AppLocale.closeYear, [year]),
@@ -50,7 +49,7 @@ class YearClosing extends StatelessWidget {
           Text(carriedText, style: context.text.sans(15, height: 1.45, color: context.palette.inverseText)),
           AppButton(
             label: context.formatString(AppLocale.prepareNext, [year + 1]),
-            onPressed: onPrepareNextYear,
+            onPressed: context.read<YearReviewCubit>().startNextYear,
             variant: AppButtonVariant.light,
             height: 46,
             fontSize: 15,

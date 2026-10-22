@@ -15,15 +15,22 @@ import '../../../../technical/theme/app_palette.dart';
 import '../cubit/year_review_cubit.dart';
 
 class ObjectiveReviewList extends StatelessWidget {
-  const ObjectiveReviewList({super.key, required this.objectives, required this.carried, required this.now});
+  const ObjectiveReviewList({
+    super.key,
+    required this.objectives,
+    required this.carried,
+    required this.now,
+    required this.year,
+  });
 
   final List<Objective> objectives;
   final Set<String> carried;
   final DateTime now;
+  final int year;
 
   @override
   Widget build(BuildContext context) {
-    final expected = expectedProgress(now);
+    final expected = expectedProgress(now, year: year);
     return AppCard(
       padding: EdgeInsets.zero,
       child: Column(
@@ -79,7 +86,7 @@ class ObjectiveReviewList extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(context.formatString(AppLocale.carryOver, [now.year + 1]), style: context.text.sans(14)),
+                  child: Text(context.formatString(AppLocale.carryOver, [year + 1]), style: context.text.sans(14)),
                 ),
                 Switch(
                   value: carried.contains(objective.id),
