@@ -6,7 +6,7 @@ import '../../../../technical/theme/widgets/app_card.dart';
 import '../../domain/entities/checkin.dart';
 import '../../domain/entities/objective.dart';
 import '../styles/domain_style.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'checkin_content.dart';
 
 class JournalEntry extends StatelessWidget {

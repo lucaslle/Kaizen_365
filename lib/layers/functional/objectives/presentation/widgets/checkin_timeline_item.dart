@@ -4,7 +4,7 @@ import '../../../../technical/localization/formatters.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../domain/entities/checkin.dart';
 import '../styles/mood_style.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'checkin_content.dart';
 
 class CheckinTimelineItem extends StatelessWidget {

@@ -4,7 +4,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_button.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
 
 class EmptyObjectivesCard extends StatelessWidget {

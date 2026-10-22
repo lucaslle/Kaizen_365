@@ -9,7 +9,7 @@ import '../cubit/journal_filter_cubit.dart';
 import '../cubit/objectives_cubit.dart';
 import '../cubit/objectives_state.dart';
 import '../widgets/journal_entry.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../widgets/objectives_status_view.dart';
 
 class JournalView extends StatelessWidget {
@@ -22,7 +22,8 @@ class JournalView extends StatelessWidget {
       builder: (context, state) => ObjectivesStatusView(
         status: state.status,
         builder: () => BlocBuilder<JournalFilterCubit, String?>(
-          builder: (context, filter) => _JournalContent(state: state, filter: filter),
+          builder: (context, filter) =>
+              _JournalContent(state: state, filter: state.byId(filter ?? '') == null ? null : filter),
         ),
       ),
     ),

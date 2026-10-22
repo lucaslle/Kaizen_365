@@ -1,58 +1,13 @@
 import '../../domain/entities/key_result.dart';
 import '../../domain/entities/life_domain.dart';
+import '../../domain/entities/objective.dart';
+import 'key_result_draft.dart';
 
-class KeyResultDraft {
-  const KeyResultDraft({
-    this.title = '',
-    this.type = KeyResultType.numeric,
-    this.start = '0',
-    this.target = '',
-    this.unit = '',
-    this.milestones = const [],
-    this.milestoneInput = '',
-  });
-
-  final String title;
-  final KeyResultType type;
-  final String start;
-  final String target;
-  final String unit;
-  final List<String> milestones;
-  final String milestoneInput;
-
-  double get startValue => _parse(start) ?? 0;
-  double? get targetValue => _parse(target);
-
-  bool get isValid =>
-      title.trim().isNotEmpty &&
-      switch (type) {
-        KeyResultType.numeric => targetValue != null && targetValue != startValue,
-        KeyResultType.milestones => milestones.isNotEmpty,
-        KeyResultType.percent => true,
-      };
-
-  static double? _parse(String text) => double.tryParse(text.trim().replaceAll(',', '.'));
-
-  KeyResultDraft copyWith({
-    String? title,
-    KeyResultType? type,
-    String? start,
-    String? target,
-    String? unit,
-    List<String>? milestones,
-    String? milestoneInput,
-  }) => KeyResultDraft(
-    title: title ?? this.title,
-    type: type ?? this.type,
-    start: start ?? this.start,
-    target: target ?? this.target,
-    unit: unit ?? this.unit,
-    milestones: milestones ?? this.milestones,
-    milestoneInput: milestoneInput ?? this.milestoneInput,
-  );
-}
+export 'key_result_draft.dart';
 
 enum WizardStep { what, why, how, recap }
+
+const _keep = Object();
 
 class ObjectiveWizardState {
   const ObjectiveWizardState({
@@ -65,9 +20,19 @@ class ObjectiveWizardState {
     this.draft = const KeyResultDraft(),
     this.draftRevision = 0,
     this.milestoneRevision = 0,
-    this.createdObjectiveId,
+    this.editingObjective,
+    this.editingKeyResult,
+    this.savedObjectiveId,
     this.hasFailed = false,
   });
+
+  factory ObjectiveWizardState.editing(Objective objective) => ObjectiveWizardState(
+    title: objective.title,
+    domain: objective.domain,
+    why: objective.why,
+    keyResults: objective.keyResults,
+    editingObjective: objective,
+  );
 
   final WizardStep step;
   final String title;
@@ -78,12 +43,16 @@ class ObjectiveWizardState {
   final KeyResultDraft draft;
   final int draftRevision;
   final int milestoneRevision;
-  final String? createdObjectiveId;
+  final Objective? editingObjective;
+  final KeyResult? editingKeyResult;
+  final String? savedObjectiveId;
   final bool hasFailed;
+
+  bool get isEditing => editingObjective != null;
 
   bool get canGoNext => switch (step) {
     WizardStep.what => title.trim().length > 2,
-    WizardStep.how => keyResults.isNotEmpty,
+    WizardStep.how => keyResults.isNotEmpty && editingKeyResult == null,
     _ => true,
   };
 
@@ -97,7 +66,8 @@ class ObjectiveWizardState {
     KeyResultDraft? draft,
     int? draftRevision,
     int? milestoneRevision,
-    String? createdObjectiveId,
+    Object? editingKeyResult = _keep,
+    String? savedObjectiveId,
     bool? hasFailed,
   }) => ObjectiveWizardState(
     step: step ?? this.step,
@@ -109,7 +79,9 @@ class ObjectiveWizardState {
     draft: draft ?? this.draft,
     draftRevision: draftRevision ?? this.draftRevision,
     milestoneRevision: milestoneRevision ?? this.milestoneRevision,
-    createdObjectiveId: createdObjectiveId ?? this.createdObjectiveId,
+    editingObjective: editingObjective,
+    editingKeyResult: identical(editingKeyResult, _keep) ? this.editingKeyResult : editingKeyResult as KeyResult?,
+    savedObjectiveId: savedObjectiveId ?? this.savedObjectiveId,
     hasFailed: hasFailed ?? false,
   );
 }

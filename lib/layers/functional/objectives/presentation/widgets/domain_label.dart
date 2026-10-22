@@ -3,7 +3,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/theme/app_text.dart';
 import '../../domain/entities/life_domain.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../styles/domain_style.dart';
 
 class DomainLabel extends StatelessWidget {

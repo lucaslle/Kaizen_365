@@ -5,14 +5,15 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../domain/entities/key_result.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../styles/objective_texts.dart';
 
 class WizardKeyResultTile extends StatelessWidget {
-  const WizardKeyResultTile({super.key, required this.keyResult, this.isCompact = false, this.onDelete});
+  const WizardKeyResultTile({super.key, required this.keyResult, this.isCompact = false, this.onEdit, this.onDelete});
 
   final KeyResult keyResult;
   final bool isCompact;
+  final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
   @override
@@ -30,6 +31,12 @@ class WizardKeyResultTile extends StatelessWidget {
           ],
         ),
       ),
+      if (onEdit != null)
+        IconButton(
+          tooltip: context.formatString(AppLocale.editItem, [keyResult.title]),
+          onPressed: onEdit,
+          icon: Icon(Symbols.edit_rounded, size: 20, color: context.palette.muted),
+        ),
       if (onDelete != null)
         IconButton(
           tooltip: context.formatString(AppLocale.deleteItem, [keyResult.title]),

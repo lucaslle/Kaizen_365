@@ -182,6 +182,18 @@ mixin AppLocale {
   static const openProfile = 'openProfile';
   static const themeLabel = 'themeLabel';
   static const profileReminderHelp = 'profileReminderHelp';
+  static const editObjective = 'editObjective';
+  static const deleteObjective = 'deleteObjective';
+  static const editWizardTitle = 'editWizardTitle';
+  static const saveChanges = 'saveChanges';
+  static const deleteConfirmTitle = 'deleteConfirmTitle';
+  static const deleteConfirmBody = 'deleteConfirmBody';
+  static const deleteConfirm = 'deleteConfirm';
+  static const toastUpdated = 'toastUpdated';
+  static const toastDeleted = 'toastDeleted';
+  static const updateKeyResultDraft = 'updateKeyResultDraft';
+  static const cancelKeyResultEdit = 'cancelKeyResultEdit';
+  static const editItem = 'editItem';
 
   static const Map<String, dynamic> fr = {
     appName: 'Kaizen 365',
@@ -367,5 +379,17 @@ mixin AppLocale {
     openProfile: 'Ouvrir mon profil',
     themeLabel: 'Thème',
     profileReminderHelp: 'Les rappels arrivent vers 18 h. Ils sont reprogrammés dès que tu changes de rythme.',
+    editObjective: 'Modifier l\'objectif',
+    deleteObjective: 'Supprimer l\'objectif',
+    editWizardTitle: 'Modifier l\'objectif',
+    saveChanges: 'Enregistrer',
+    deleteConfirmTitle: 'Supprimer cet objectif ?',
+    deleteConfirmBody: '« %a » et tout son historique de check-ins seront supprimés définitivement.',
+    deleteConfirm: 'Supprimer',
+    toastUpdated: 'Objectif modifié',
+    toastDeleted: 'Objectif supprimé',
+    updateKeyResultDraft: 'Enregistrer ce résultat clé',
+    cancelKeyResultEdit: 'Annuler la modification',
+    editItem: 'Modifier %a',
   };
 }

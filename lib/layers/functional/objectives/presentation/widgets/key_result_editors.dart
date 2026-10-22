@@ -9,7 +9,7 @@ import '../../../../technical/localization/formatters.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_text_field.dart';
 import '../cubit/key_result_update_cubit.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'milestone_row.dart';
 
 String _plain(double v) => v == v.roundToDouble() ? v.round().toString() : v.toString();

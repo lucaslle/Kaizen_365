@@ -11,7 +11,7 @@ import '../../../../technical/theme/widgets/app_text_field.dart';
 import '../../../../technical/theme/widgets/segmented_pill.dart';
 import '../../domain/entities/key_result.dart';
 import '../cubit/objective_wizard_cubit.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../cubit/objective_wizard_state.dart';
 
 class KeyResultDraftForm extends StatelessWidget {
@@ -56,6 +56,7 @@ class KeyResultDraftForm extends StatelessWidget {
         AppTextField(
           label: AppLocale.keyResultNameLabel.getString(context),
           hint: AppLocale.keyResultNameHint.getString(context),
+          initialValue: draft.title,
           onChanged: (v) => cubit.draftChanged(draft.copyWith(title: v)),
           fill: context.palette.field,
           radius: 14,
@@ -151,12 +152,23 @@ class KeyResultDraftForm extends StatelessWidget {
           ),
         ],
         AppButton(
-          label: AppLocale.addKeyResult.getString(context),
+          label: (state.editingKeyResult == null ? AppLocale.addKeyResult : AppLocale.updateKeyResultDraft).getString(
+            context,
+          ),
           onPressed: draft.isValid ? cubit.addKeyResult : null,
           variant: AppButtonVariant.dark,
           height: 46,
           fontSize: 15,
         ),
+        if (state.editingKeyResult != null)
+          TextButton(
+            onPressed: cubit.cancelKeyResultEdit,
+            style: TextButton.styleFrom(minimumSize: const Size.fromHeight(44)),
+            child: Text(
+              AppLocale.cancelKeyResultEdit.getString(context),
+              style: context.text.sans(14, weight: 600, color: context.palette.muted),
+            ),
+          ),
       ],
     );
   }

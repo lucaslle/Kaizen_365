@@ -26,9 +26,17 @@ class ObjectiveGatewayImpl implements ObjectiveGateway {
   Future<void> save(Objective objective) async {
     final current = await _objectives();
     final exists = current.any((o) => o.id == objective.id);
-    final next = List<Objective>.unmodifiable(
-      exists ? [for (final o in current) o.id == objective.id ? objective : o] : [...current, objective],
-    );
+    await _publish(exists ? [for (final o in current) o.id == objective.id ? objective : o] : [...current, objective]);
+  }
+
+  @override
+  Future<void> delete(String objectiveId) async => _publish([
+    for (final o in await _objectives())
+      if (o.id != objectiveId) o,
+  ]);
+
+  Future<void> _publish(List<Objective> objectives) async {
+    final next = List<Objective>.unmodifiable(objectives);
     _cache = next;
     _changes.add(next);
     _pendingWrite = _pendingWrite

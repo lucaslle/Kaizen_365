@@ -3,7 +3,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/theme/app_text.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../cubit/objectives_state.dart';
 
 class ObjectivesStatusView extends StatelessWidget {

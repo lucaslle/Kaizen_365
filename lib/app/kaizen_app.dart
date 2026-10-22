@@ -24,6 +24,8 @@ class KaizenApp extends StatelessWidget {
     ObjectivesNotice.progressSaved: AppLocale.toastProgress,
     ObjectivesNotice.checkinPublished: AppLocale.toastCheckin,
     ObjectivesNotice.objectiveCreated: AppLocale.toastCreated,
+    ObjectivesNotice.objectiveUpdated: AppLocale.toastUpdated,
+    ObjectivesNotice.objectiveDeleted: AppLocale.toastDeleted,
     ObjectivesNotice.saveFailed: AppLocale.errorSaving,
   };
 
@@ -34,7 +36,7 @@ class KaizenApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => SettingsCubit(getIt(), getIt(), getIt(), getIt())..refreshReminders()),
-        BlocProvider(create: (_) => ObjectivesCubit(getIt(), getIt(), getIt(), getIt(), getIt())..load()),
+        BlocProvider(create: (_) => ObjectivesCubit(getIt(), getIt(), getIt(), getIt(), getIt(), getIt())..load()),
         BlocProvider(create: (_) => YearReviewCubit(getIt(), getIt(), getIt(), getIt())..load()),
         BlocProvider(create: (_) => TabCubit()),
       ],

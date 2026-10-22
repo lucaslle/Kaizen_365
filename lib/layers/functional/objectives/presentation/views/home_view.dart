@@ -14,7 +14,7 @@ import '../widgets/objective_card.dart';
 import '../widgets/objectives_status_view.dart';
 import '../widgets/status_summary.dart';
 import '../widgets/year_card.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'objective_detail_view.dart';
 
 class HomeView extends StatelessWidget {

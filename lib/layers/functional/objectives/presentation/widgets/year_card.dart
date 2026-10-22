@@ -5,7 +5,7 @@ import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/localization/formatters.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../../domain/entities/progress.dart';
 
 class YearCard extends StatelessWidget {

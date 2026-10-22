@@ -19,11 +19,17 @@ class Objective {
   final List<KeyResult> keyResults;
   final List<Checkin> checkins;
 
-  Objective copyWith({List<KeyResult>? keyResults, List<Checkin>? checkins}) => Objective(
+  Objective copyWith({
+    String? title,
+    LifeDomain? domain,
+    String? why,
+    List<KeyResult>? keyResults,
+    List<Checkin>? checkins,
+  }) => Objective(
     id: id,
-    title: title,
-    domain: domain,
-    why: why,
+    title: title ?? this.title,
+    domain: domain ?? this.domain,
+    why: why ?? this.why,
     keyResults: keyResults ?? this.keyResults,
     checkins: checkins ?? this.checkins,
   );

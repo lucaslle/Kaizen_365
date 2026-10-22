@@ -3,14 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/key_result.dart';
 import '../../domain/entities/life_domain.dart';
-import '../../domain/entities/milestone.dart';
+import '../../domain/entities/objective.dart';
 import '../../domain/use_cases/create_objective_use_case.dart';
+import '../../domain/use_cases/update_objective_use_case.dart';
 import 'objective_wizard_state.dart';
 
 class ObjectiveWizardCubit extends Cubit<ObjectiveWizardState> {
-  ObjectiveWizardCubit(this._createObjective) : super(const ObjectiveWizardState());
+  ObjectiveWizardCubit(this._createObjective, this._updateObjective, {Objective? editing})
+    : super(editing == null ? const ObjectiveWizardState() : ObjectiveWizardState.editing(editing));
 
   final CreateObjectiveUseCase _createObjective;
+  final UpdateObjectiveUseCase _updateObjective;
 
   void titleChanged(String title) => emit(state.copyWith(title: title));
 
@@ -29,15 +32,24 @@ class ObjectiveWizardCubit extends Cubit<ObjectiveWizardState> {
       return;
     }
     try {
-      final objective = await _createObjective(
-        title: state.title,
-        domain: state.domain,
-        why: state.why,
-        keyResults: state.keyResults,
-      );
-      emit(state.copyWith(createdObjectiveId: objective.id));
+      final editing = state.editingObjective;
+      final saved = editing == null
+          ? await _createObjective(
+              title: state.title,
+              domain: state.domain,
+              why: state.why,
+              keyResults: state.keyResults,
+            )
+          : await _updateObjective(
+              editing,
+              title: state.title,
+              domain: state.domain,
+              why: state.why,
+              keyResults: state.keyResults,
+            );
+      emit(state.copyWith(savedObjectiveId: saved.id));
     } catch (error, stackTrace) {
-      debugPrint('Objective creation failed: $error\n$stackTrace');
+      debugPrint('Saving objective failed: $error\n$stackTrace');
       emit(state.copyWith(hasFailed: true));
     }
   }
@@ -59,40 +71,44 @@ class ObjectiveWizardCubit extends Cubit<ObjectiveWizardState> {
       emit(state.copyWith(draft: state.draft.copyWith(milestones: [...state.draft.milestones]..removeAt(index))));
 
   void addKeyResult() {
-    final draft = state.draft;
-    if (!draft.isValid) return;
-    final id = 'k${DateTime.now().microsecondsSinceEpoch}';
-    final keyResult = switch (draft.type) {
-      KeyResultType.numeric => KeyResult(
-        id: id,
-        title: draft.title.trim(),
-        type: draft.type,
-        start: draft.startValue,
-        value: draft.startValue,
-        target: draft.targetValue!,
-        unit: draft.unit.trim(),
-        step: draft.targetValue! >= 1000
-            ? 100
-            : draft.targetValue! >= 100
-            ? 10
-            : 1,
-      ),
-      KeyResultType.percent => KeyResult(id: id, title: draft.title.trim(), type: draft.type),
-      KeyResultType.milestones => KeyResult(
-        id: id,
-        title: draft.title.trim(),
-        type: draft.type,
-        milestones: [for (final t in draft.milestones) Milestone(title: t)],
-      ),
-    };
+    if (!state.draft.isValid) return;
+    final previous = state.editingKeyResult;
+    final keyResult = state.draft.toKeyResult(
+      previous?.id ?? 'k${DateTime.now().microsecondsSinceEpoch}',
+      previous: previous,
+    );
+    _resetDraft(
+      previous == null
+          ? [...state.keyResults, keyResult]
+          : [for (final k in state.keyResults) k.id == previous.id ? keyResult : k],
+    );
+  }
+
+  void editKeyResult(int index) {
+    if (state.editingKeyResult != null) return;
+    final keyResult = state.keyResults[index];
     emit(
       state.copyWith(
-        keyResults: [...state.keyResults, keyResult],
-        draft: const KeyResultDraft(),
+        draft: KeyResultDraft.fromKeyResult(keyResult),
         draftRevision: state.draftRevision + 1,
+        editingKeyResult: keyResult,
       ),
     );
   }
 
-  void removeKeyResult(int index) => emit(state.copyWith(keyResults: [...state.keyResults]..removeAt(index)));
+  void cancelKeyResultEdit() => _resetDraft(state.keyResults);
+
+  void removeKeyResult(int index) {
+    if (state.editingKeyResult != null) return;
+    emit(state.copyWith(keyResults: [...state.keyResults]..removeAt(index)));
+  }
+
+  void _resetDraft(List<KeyResult> keyResults) => emit(
+    state.copyWith(
+      keyResults: keyResults,
+      draft: const KeyResultDraft(),
+      draftRevision: state.draftRevision + 1,
+      editingKeyResult: null,
+    ),
+  );
 }

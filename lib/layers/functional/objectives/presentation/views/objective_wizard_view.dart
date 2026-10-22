@@ -10,39 +10,50 @@ import '../../../../technical/theme/widgets/app_button.dart';
 import '../../../../technical/theme/widgets/motion.dart';
 import '../cubit/objective_wizard_cubit.dart';
 import '../cubit/objective_wizard_state.dart';
+import '../../domain/entities/objective.dart';
 import '../cubit/objectives_cubit.dart';
 import '../widgets/wizard_steps.dart';
 import '../widgets/wizard_key_results_step.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'objective_detail_view.dart';
 
 class ObjectiveWizardView extends StatelessWidget {
-  const ObjectiveWizardView({super.key, required this.reminderKey, required this.year});
+  const ObjectiveWizardView({super.key, required this.year, this.reminderKey});
 
-  final String reminderKey;
   final int year;
+  final String? reminderKey;
 
-  static Future<void> open(BuildContext context, {required String reminderKey}) => Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) => BlocProvider(
-        create: (_) => ObjectiveWizardCubit(GetIt.I()),
-        child: ObjectiveWizardView(reminderKey: reminderKey, year: DateTime.now().year),
-      ),
-    ),
-  );
+  static Future<void> open(BuildContext context, {required String reminderKey}) => _push(context, null, reminderKey);
+
+  static Future<void> openEdit(BuildContext context, Objective objective) => _push(context, objective, null);
+
+  static Future<void> _push(BuildContext context, Objective? editing, String? reminderKey) =>
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => BlocProvider(
+            create: (_) => ObjectiveWizardCubit(GetIt.I(), GetIt.I(), editing: editing),
+            child: ObjectiveWizardView(reminderKey: reminderKey, year: DateTime.now().year),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) => BlocConsumer<ObjectiveWizardCubit, ObjectiveWizardState>(
     listenWhen: (previous, current) =>
-        previous.createdObjectiveId != current.createdObjectiveId || (current.hasFailed && !previous.hasFailed),
+        previous.savedObjectiveId != current.savedObjectiveId || (current.hasFailed && !previous.hasFailed),
     listener: (context, state) {
       if (state.hasFailed) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocale.errorSaving.getString(context))));
         return;
       }
+      if (state.isEditing) {
+        context.read<ObjectivesCubit>().notifyUpdated();
+        Navigator.of(context).pop();
+        return;
+      }
       context.read<ObjectivesCubit>().notifyCreated();
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(builder: (_) => ObjectiveDetailView(objectiveId: state.createdObjectiveId!)),
+        MaterialPageRoute<void>(builder: (_) => ObjectiveDetailView(objectiveId: state.savedObjectiveId!)),
       );
     },
     builder: (context, state) {
@@ -63,7 +74,10 @@ class ObjectiveWizardView extends StatelessWidget {
               icon: Icon(Symbols.close_rounded, color: context.palette.ink),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text(AppLocale.wizardTitle.getString(context), style: context.text.sans(16, weight: 600)),
+            title: Text(
+              (state.isEditing ? AppLocale.editWizardTitle : AppLocale.wizardTitle).getString(context),
+              style: context.text.sans(16, weight: 600),
+            ),
             actions: [
               SizedBox(
                 width: 56,
@@ -125,7 +139,7 @@ class _WizardActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<ObjectiveWizardCubit>();
     final nextKey = switch (state.step) {
-      WizardStep.recap => AppLocale.createObjective,
+      WizardStep.recap => state.isEditing ? AppLocale.saveChanges : AppLocale.createObjective,
       WizardStep.why when state.why.trim().isEmpty => AppLocale.skip,
       _ => AppLocale.next,
     };

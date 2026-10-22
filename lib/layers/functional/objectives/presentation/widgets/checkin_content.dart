@@ -6,7 +6,7 @@ import '../../../../technical/theme/app_text.dart';
 import '../../domain/entities/checkin.dart';
 import '../../domain/entities/progress_change.dart';
 import '../styles/mood_style.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../styles/objective_texts.dart';
 
 class CheckinMood extends StatelessWidget {

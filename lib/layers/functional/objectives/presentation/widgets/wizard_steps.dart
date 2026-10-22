@@ -13,7 +13,7 @@ import '../cubit/objective_wizard_cubit.dart';
 import '../cubit/objective_wizard_state.dart';
 import '../styles/domain_style.dart';
 import 'domain_label.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'wizard_key_result_tile.dart';
 
 const _suggestions = [
@@ -140,10 +140,10 @@ class WizardWhyStep extends StatelessWidget {
 }
 
 class WizardRecapStep extends StatelessWidget {
-  const WizardRecapStep({super.key, required this.state, required this.reminderKey});
+  const WizardRecapStep({super.key, required this.state, this.reminderKey});
 
   final ObjectiveWizardState state;
-  final String reminderKey;
+  final String? reminderKey;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -165,10 +165,11 @@ class WizardRecapStep extends StatelessWidget {
           ],
         ),
       ),
-      Text(
-        context.formatString(AppLocale.reminderText, [reminderKey.getString(context)]),
-        style: context.text.sans(14, height: 1.45, color: context.palette.muted),
-      ),
+      if (reminderKey != null)
+        Text(
+          context.formatString(AppLocale.reminderText, [reminderKey!.getString(context)]),
+          style: context.text.sans(14, height: 1.45, color: context.palette.muted),
+        ),
     ],
   );
 }

@@ -8,7 +8,7 @@ import '../../../../technical/theme/widgets/app_button.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
 import '../../domain/entities/progress.dart';
 import '../cubit/year_review_cubit.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../cubit/year_review_state.dart';
 
 class YearClosing extends StatelessWidget {

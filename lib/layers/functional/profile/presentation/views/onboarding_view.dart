@@ -8,7 +8,7 @@ import '../../../../technical/theme/widgets/app_button.dart';
 import '../../../../technical/theme/widgets/motion.dart';
 import '../cubit/settings_cubit.dart';
 import '../widgets/onboarding_steps.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../widgets/profile_step.dart';
 
 class OnboardingView extends StatelessWidget {

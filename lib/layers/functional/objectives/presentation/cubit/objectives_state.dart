@@ -2,7 +2,15 @@ import '../../domain/entities/objective.dart';
 
 enum ObjectivesStatus { loading, ready, failure }
 
-enum ObjectivesNotice { milestoneDone, progressSaved, checkinPublished, objectiveCreated, saveFailed }
+enum ObjectivesNotice {
+  milestoneDone,
+  progressSaved,
+  checkinPublished,
+  objectiveCreated,
+  objectiveUpdated,
+  objectiveDeleted,
+  saveFailed,
+}
 
 class ObjectivesState {
   const ObjectivesState({

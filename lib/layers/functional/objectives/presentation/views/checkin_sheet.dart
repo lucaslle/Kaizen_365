@@ -13,7 +13,7 @@ import '../../domain/entities/mood.dart';
 import '../../domain/entities/objective.dart';
 import '../cubit/checkin_draft_cubit.dart';
 import '../cubit/objectives_cubit.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../styles/mood_style.dart';
 
 class CheckinSheet extends StatelessWidget {

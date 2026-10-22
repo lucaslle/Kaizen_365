@@ -14,9 +14,11 @@ import 'package:kaizen365/layers/functional/objectives/domain/gateways/objective
 import 'package:kaizen365/layers/functional/objectives/domain/gateways/year_review_gateway.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/add_checkin_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/create_objective_use_case.dart';
+import 'package:kaizen365/layers/functional/objectives/domain/use_cases/delete_objective_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/get_year_review_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/save_year_review_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/toggle_milestone_use_case.dart';
+import 'package:kaizen365/layers/functional/objectives/domain/use_cases/update_objective_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/update_key_result_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/watch_objectives_use_case.dart';
 import 'package:kaizen365/layers/functional/profile/domain/entities/user_settings.dart';
@@ -45,6 +47,12 @@ class _MemoryObjectiveGateway implements ObjectiveGateway {
   @override
   Future<void> save(Objective objective) async {
     _objectives = [..._objectives.where((o) => o.id != objective.id), objective];
+    _changes.add(_objectives);
+  }
+
+  @override
+  Future<void> delete(String objectiveId) async {
+    _objectives = _objectives.where((o) => o.id != objectiveId).toList();
     _changes.add(_objectives);
   }
 }
@@ -94,6 +102,8 @@ void main() {
     getIt
       ..registerLazySingleton(() => WatchObjectivesUseCase(getIt()))
       ..registerLazySingleton(() => CreateObjectiveUseCase(getIt(), getIt()))
+      ..registerLazySingleton(() => UpdateObjectiveUseCase(getIt()))
+      ..registerLazySingleton(() => DeleteObjectiveUseCase(getIt()))
       ..registerLazySingleton(() => AddCheckinUseCase(getIt(), getIt()))
       ..registerLazySingleton(() => ToggleMilestoneUseCase(getIt(), getIt()))
       ..registerLazySingleton(() => UpdateKeyResultUseCase(getIt(), getIt()))
@@ -180,6 +190,31 @@ void main() {
     await shot('16_home_night');
     await tap('Bilan');
     await shot('17_review_night');
+
+    await tap('Objectifs');
+    await tap('Courir un semi-marathon');
+    await tester.tap(find.byTooltip("Modifier l'objectif"));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Courir le semi de Lyon');
+    await tester.pumpAndSettle();
+    await tap('Suivant');
+    await tap('Passer');
+    await tester.tap(find.byTooltip('Modifier Kilomètres courus'));
+    await tester.pumpAndSettle();
+    await shot('18_edit_key_result');
+    await tap('Enregistrer ce résultat clé');
+    await tap('Suivant');
+    await tap('Enregistrer');
+    expect(find.text('Objectif modifié'), findsOneWidget);
+    expect(find.text('Courir le semi de Lyon'), findsOneWidget);
+    expect(find.text('10 / 900 km'), findsOneWidget);
+
+    await tester.tap(find.byTooltip("Supprimer l'objectif"));
+    await tester.pumpAndSettle();
+    await shot('19_delete_confirm');
+    await tap('Supprimer');
+    expect(find.text('Objectif supprimé'), findsOneWidget);
+    expect(find.text("Aucun cap pour l'instant"), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

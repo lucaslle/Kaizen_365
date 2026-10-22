@@ -11,7 +11,7 @@ import '../styles/domain_style.dart';
 import '../styles/objective_texts.dart';
 import '../styles/status_style.dart';
 import 'domain_label.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'objective_status_pill.dart';
 
 class ObjectiveCard extends StatelessWidget {

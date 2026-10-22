@@ -15,8 +15,10 @@ import '../widgets/checkin_timeline_item.dart';
 import '../widgets/domain_label.dart';
 import '../widgets/key_result_card.dart';
 import '../widgets/progress_hero_card.dart';
+import '../../../../technical/theme/app_colors.dart';
 import 'checkin_sheet.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import 'objective_wizard_view.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'key_result_update_sheet.dart';
 
 class ObjectiveDetailView extends StatelessWidget {
@@ -35,6 +37,19 @@ class ObjectiveDetailView extends StatelessWidget {
         icon: Icon(Symbols.arrow_back_rounded, color: context.palette.ink),
         onPressed: () => Navigator.of(context).pop(),
       ),
+      actions: [
+        IconButton(
+          tooltip: AppLocale.editObjective.getString(context),
+          icon: const Icon(Symbols.edit_rounded),
+          onPressed: () => _withObjective(context, (o) => ObjectiveWizardView.openEdit(context, o)),
+        ),
+        IconButton(
+          tooltip: AppLocale.deleteObjective.getString(context),
+          icon: const Icon(Symbols.delete_rounded),
+          onPressed: () => _withObjective(context, (o) => _confirmDelete(context, o)),
+        ),
+        const SizedBox(width: 4),
+      ],
       title: BlocSelector<ObjectivesCubit, ObjectivesState, int>(
         selector: (state) => state.now.year,
         builder: (context, year) =>
@@ -49,6 +64,44 @@ class ObjectiveDetailView extends StatelessWidget {
       },
     ),
   );
+
+  void _withObjective(BuildContext context, void Function(Objective objective) action) {
+    final objective = context.read<ObjectivesCubit>().state.byId(objectiveId);
+    if (objective != null) action(objective);
+  }
+
+  Future<void> _confirmDelete(BuildContext context, Objective objective) async {
+    final cubit = context.read<ObjectivesCubit>();
+    final navigator = Navigator.of(context);
+    final isConfirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: context.palette.surface,
+        title: Text(AppLocale.deleteConfirmTitle.getString(context), style: context.text.sheetTitle),
+        content: Text(context.formatString(AppLocale.deleteConfirmBody, [objective.title]), style: context.text.body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(AppLocale.cancel.getString(context), style: context.text.sans(15, weight: 600)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(
+              AppLocale.deleteConfirm.getString(context),
+              style: context.text.sans(
+                15,
+                weight: 600,
+                color: context.palette.brightness == Brightness.dark ? AppColors.lateBg : AppColors.lateFg,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (isConfirmed != true) return;
+    navigator.pop();
+    await cubit.deleteObjective(objective);
+  }
 }
 
 class _DetailContent extends StatelessWidget {

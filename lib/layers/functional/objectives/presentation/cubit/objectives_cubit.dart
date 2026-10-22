@@ -9,19 +9,27 @@ import '../../domain/entities/milestone.dart';
 import '../../domain/entities/mood.dart';
 import '../../domain/entities/objective.dart';
 import '../../domain/use_cases/add_checkin_use_case.dart';
+import '../../domain/use_cases/delete_objective_use_case.dart';
 import '../../domain/use_cases/toggle_milestone_use_case.dart';
 import '../../domain/use_cases/update_key_result_use_case.dart';
 import '../../domain/use_cases/watch_objectives_use_case.dart';
 import 'objectives_state.dart';
 
 class ObjectivesCubit extends Cubit<ObjectivesState> {
-  ObjectivesCubit(this._watchObjectives, this._toggleMilestone, this._updateKeyResult, this._addCheckin, this._clock)
-    : super(ObjectivesState(now: _clock()));
+  ObjectivesCubit(
+    this._watchObjectives,
+    this._toggleMilestone,
+    this._updateKeyResult,
+    this._addCheckin,
+    this._deleteObjective,
+    this._clock,
+  ) : super(ObjectivesState(now: _clock()));
 
   final WatchObjectivesUseCase _watchObjectives;
   final ToggleMilestoneUseCase _toggleMilestone;
   final UpdateKeyResultUseCase _updateKeyResult;
   final AddCheckinUseCase _addCheckin;
+  final DeleteObjectiveUseCase _deleteObjective;
   final Clock _clock;
   StreamSubscription<List<Objective>>? _subscription;
 
@@ -58,6 +66,13 @@ class ObjectivesCubit extends Cubit<ObjectivesState> {
   });
 
   void notifyCreated() => emit(state.withNotice(ObjectivesNotice.objectiveCreated));
+
+  void notifyUpdated() => emit(state.withNotice(ObjectivesNotice.objectiveUpdated));
+
+  Future<void> deleteObjective(Objective objective) => _guard(() async {
+    await _deleteObjective(objective.id);
+    emit(state.withNotice(ObjectivesNotice.objectiveDeleted));
+  });
 
   Future<void> _guard(Future<void> Function() action) async {
     try {

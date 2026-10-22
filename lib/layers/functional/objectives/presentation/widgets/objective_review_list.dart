@@ -11,7 +11,7 @@ import '../../domain/entities/objective.dart';
 import '../../domain/entities/progress.dart';
 import '../styles/domain_style.dart';
 import '../styles/status_style.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../cubit/year_review_cubit.dart';
 
 class ObjectiveReviewList extends StatelessWidget {

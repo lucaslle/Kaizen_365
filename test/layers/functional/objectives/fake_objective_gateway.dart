@@ -11,4 +11,7 @@ class FakeObjectiveGateway implements ObjectiveGateway {
 
   @override
   Stream<List<Objective>> watch() => Stream.value(saved);
+
+  @override
+  Future<void> delete(String objectiveId) async => saved.removeWhere((o) => o.id == objectiveId);
 }

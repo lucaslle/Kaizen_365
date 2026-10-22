@@ -8,9 +8,11 @@ import '../layers/functional/objectives/domain/gateways/objective_gateway.dart';
 import '../layers/functional/objectives/domain/gateways/year_review_gateway.dart';
 import '../layers/functional/objectives/domain/use_cases/add_checkin_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/create_objective_use_case.dart';
+import '../layers/functional/objectives/domain/use_cases/delete_objective_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/get_year_review_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/save_year_review_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/toggle_milestone_use_case.dart';
+import '../layers/functional/objectives/domain/use_cases/update_objective_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/update_key_result_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/watch_objectives_use_case.dart';
 import '../layers/functional/profile/data/gateways/reminder_gateway_impl.dart';
@@ -48,6 +50,8 @@ Future<void> initializeDependencies() async {
     ..registerLazySingleton<ReminderGateway>(() => ReminderGatewayImpl(notifications))
     ..registerLazySingleton(() => WatchObjectivesUseCase(getIt()))
     ..registerLazySingleton(() => CreateObjectiveUseCase(getIt(), getIt()))
+    ..registerLazySingleton(() => UpdateObjectiveUseCase(getIt()))
+    ..registerLazySingleton(() => DeleteObjectiveUseCase(getIt()))
     ..registerLazySingleton(() => AddCheckinUseCase(getIt(), getIt()))
     ..registerLazySingleton(() => ToggleMilestoneUseCase(getIt(), getIt()))
     ..registerLazySingleton(() => UpdateKeyResultUseCase(getIt(), getIt()))

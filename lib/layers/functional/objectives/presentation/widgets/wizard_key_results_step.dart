@@ -8,7 +8,7 @@ import '../../../../technical/theme/widgets/app_card.dart';
 import '../cubit/objective_wizard_cubit.dart';
 import '../cubit/objective_wizard_state.dart';
 import 'key_result_draft_form.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import 'wizard_key_result_tile.dart';
 
 class WizardKeyResultsStep extends StatelessWidget {
@@ -36,11 +36,16 @@ class WizardKeyResultsStep extends StatelessWidget {
             spacing: 8,
             children: [
               for (final (i, k) in state.keyResults.indexed)
-                AppCard(
-                  radius: 16,
-                  padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-                  child: WizardKeyResultTile(keyResult: k, onDelete: () => cubit.removeKeyResult(i)),
-                ),
+                if (k.id != state.editingKeyResult?.id)
+                  AppCard(
+                    radius: 16,
+                    padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+                    child: WizardKeyResultTile(
+                      keyResult: k,
+                      onEdit: state.editingKeyResult == null ? () => cubit.editKeyResult(i) : null,
+                      onDelete: state.editingKeyResult == null ? () => cubit.removeKeyResult(i) : null,
+                    ),
+                  ),
             ],
           ),
         AppCard(

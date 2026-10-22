@@ -7,7 +7,7 @@ import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
 import '../../domain/entities/key_result.dart';
 import '../../domain/entities/objective.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../../domain/entities/progress.dart';
 
 class YearStats extends StatelessWidget {

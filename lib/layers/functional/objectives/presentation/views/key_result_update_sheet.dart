@@ -14,7 +14,7 @@ import '../../domain/entities/progress.dart';
 import '../cubit/key_result_update_cubit.dart';
 import '../cubit/objectives_cubit.dart';
 import '../styles/objective_texts.dart';
-import '../../../../../layers/technical/theme/app_palette.dart';
+import '../../../../technical/theme/app_palette.dart';
 import '../widgets/key_result_editors.dart';
 
 class KeyResultUpdateSheet extends StatelessWidget {
