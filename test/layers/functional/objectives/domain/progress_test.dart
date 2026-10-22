@@ -26,22 +26,32 @@ void main() {
 
     test('percent and milestones', () {
       expect(keyResultProgress(const KeyResult(id: 'k', title: 't', type: KeyResultType.percent, value: 70)), 0.7);
-      const ms = KeyResult(id: 'k', title: 't', type: KeyResultType.milestones, milestones: [
-        Milestone(title: 'a', isDone: true),
-        Milestone(title: 'b'),
-        Milestone(title: 'c', isDone: true),
-        Milestone(title: 'd'),
-      ]);
+      const ms = KeyResult(
+        id: 'k',
+        title: 't',
+        type: KeyResultType.milestones,
+        milestones: [
+          Milestone(title: 'a', isDone: true),
+          Milestone(title: 'b'),
+          Milestone(title: 'c', isDone: true),
+          Milestone(title: 'd'),
+        ],
+      );
       expect(keyResultProgress(ms), 0.5);
       expect(keyResultProgress(const KeyResult(id: 'k', title: 't', type: KeyResultType.milestones)), 0);
     });
   });
 
   test('objective progress is the mean of its key results, year score the mean of objectives', () {
-    const a = Objective(id: 'a', title: 'a', domain: LifeDomain.health, keyResults: [
-      KeyResult(id: '1', title: 't', type: KeyResultType.percent, value: 100),
-      KeyResult(id: '2', title: 't', type: KeyResultType.percent, value: 0),
-    ]);
+    const a = Objective(
+      id: 'a',
+      title: 'a',
+      domain: LifeDomain.health,
+      keyResults: [
+        KeyResult(id: '1', title: 't', type: KeyResultType.percent, value: 100),
+        KeyResult(id: '2', title: 't', type: KeyResultType.percent, value: 0),
+      ],
+    );
     const b = Objective(id: 'b', title: 'b', domain: LifeDomain.health);
     expect(objectiveProgress(a), 0.5);
     expect(objectiveProgress(b), 0);

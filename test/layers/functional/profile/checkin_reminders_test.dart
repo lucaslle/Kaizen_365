@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/entities/reminder_schedule.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/entities/user_settings.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/gateways/settings_gateway.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/use_cases/complete_onboarding_use_case.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/use_cases/schedule_checkin_reminders_use_case.dart';
+import 'package:kaizen365/layers/functional/profile/domain/entities/reminder_schedule.dart';
+import 'package:kaizen365/layers/functional/profile/domain/entities/user_settings.dart';
+import 'package:kaizen365/layers/functional/profile/domain/gateways/settings_gateway.dart';
+import 'package:kaizen365/layers/functional/profile/domain/use_cases/complete_onboarding_use_case.dart';
+import 'package:kaizen365/layers/functional/profile/domain/use_cases/schedule_checkin_reminders_use_case.dart';
 
 import 'fake_reminder_gateway.dart';
 
@@ -45,9 +45,14 @@ void main() {
       expect((d.weekday, d.hour, d.minute), (DateTime.sunday, 18, 0));
     }
     for (var i = 1; i < dates.length; i++) {
-      expect(DateTime.utc(dates[i].year, dates[i].month, dates[i].day)
-          .difference(DateTime.utc(dates[i - 1].year, dates[i - 1].month, dates[i - 1].day))
-          .inDays, 14);
+      expect(
+        DateTime.utc(
+          dates[i].year,
+          dates[i].month,
+          dates[i].day,
+        ).difference(DateTime.utc(dates[i - 1].year, dates[i - 1].month, dates[i - 1].day)).inDays,
+        14,
+      );
     }
   });
 
@@ -63,11 +68,11 @@ void main() {
     final settings = _NoopSettingsGateway();
     final complete = CompleteOnboardingUseCase(settings, gateway, schedule);
     gateway.isPermissionGranted = false;
-    await complete(name: ' Camille ', rhythm: CheckinRhythm.weekly);
+    await complete(const UserSettings(name: ' Camille '));
     expect(settings.saved!.name, 'Camille');
     expect(gateway.calls, isEmpty);
     gateway.isPermissionGranted = true;
-    await complete(name: 'Camille', rhythm: CheckinRhythm.weekly);
+    await complete(const UserSettings(name: 'Camille'));
     expect(gateway.calls, isNotEmpty);
   });
 }

@@ -10,10 +10,10 @@ class CompleteOnboardingUseCase {
   final ReminderGateway _reminderGateway;
   final ScheduleCheckinRemindersUseCase _scheduleReminders;
 
-  Future<UserSettings> call({required String name, required CheckinRhythm rhythm}) async {
-    final settings = UserSettings(name: name.trim(), rhythm: rhythm, hasCompletedOnboarding: true);
+  Future<UserSettings> call(UserSettings draft) async {
+    final settings = draft.copyWith(name: draft.name.trim(), hasCompletedOnboarding: true);
     await _settingsGateway.save(settings);
-    if (await _reminderGateway.requestPermission()) await _scheduleReminders(rhythm);
+    if (await _reminderGateway.requestPermission()) await _scheduleReminders(settings.rhythm);
     return settings;
   }
 }

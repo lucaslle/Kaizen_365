@@ -32,7 +32,7 @@ class ProgressHeroCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(Formatters.percent(progress), style: AppText.mono(56, weight: 600, height: 1, tracking: -0.05)),
+              Text(Formatters.percent(progress), style: context.text.mono(56, weight: 600, height: 1, tracking: -0.05)),
               ObjectiveStatusPill(status: statusFor(progress, expected), height: 28),
             ],
           ),
@@ -46,8 +46,11 @@ class ProgressHeroCard extends StatelessWidget {
           Text(
             progress >= 0.999
                 ? AppLocale.objectiveDone.getString(context)
-                : context.formatString(AppLocale.expectedDiff, [Formatters.percent(expected), '${diff >= 0 ? '+' : ''}$diff']),
-            style: AppText.small,
+                : context.formatString(AppLocale.expectedDiff, [
+                    Formatters.percent(expected),
+                    '${diff >= 0 ? '+' : ''}$diff',
+                  ]),
+            style: context.text.small,
           ),
         ],
       ),

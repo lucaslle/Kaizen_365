@@ -47,10 +47,12 @@ class ObjectiveWizardCubit extends Cubit<ObjectiveWizardState> {
   void addDraftMilestone() {
     final title = state.draft.milestoneInput.trim();
     if (title.isEmpty) return;
-    emit(state.copyWith(
-      draft: state.draft.copyWith(milestones: [...state.draft.milestones, title], milestoneInput: ''),
-      milestoneRevision: state.milestoneRevision + 1,
-    ));
+    emit(
+      state.copyWith(
+        draft: state.draft.copyWith(milestones: [...state.draft.milestones, title], milestoneInput: ''),
+        milestoneRevision: state.milestoneRevision + 1,
+      ),
+    );
   }
 
   void removeDraftMilestone(int index) =>
@@ -62,28 +64,34 @@ class ObjectiveWizardCubit extends Cubit<ObjectiveWizardState> {
     final id = 'k${DateTime.now().microsecondsSinceEpoch}';
     final keyResult = switch (draft.type) {
       KeyResultType.numeric => KeyResult(
-          id: id,
-          title: draft.title.trim(),
-          type: draft.type,
-          start: draft.startValue,
-          value: draft.startValue,
-          target: draft.targetValue!,
-          unit: draft.unit.trim(),
-          step: draft.targetValue! >= 1000 ? 100 : draft.targetValue! >= 100 ? 10 : 1,
-        ),
+        id: id,
+        title: draft.title.trim(),
+        type: draft.type,
+        start: draft.startValue,
+        value: draft.startValue,
+        target: draft.targetValue!,
+        unit: draft.unit.trim(),
+        step: draft.targetValue! >= 1000
+            ? 100
+            : draft.targetValue! >= 100
+            ? 10
+            : 1,
+      ),
       KeyResultType.percent => KeyResult(id: id, title: draft.title.trim(), type: draft.type),
       KeyResultType.milestones => KeyResult(
-          id: id,
-          title: draft.title.trim(),
-          type: draft.type,
-          milestones: [for (final t in draft.milestones) Milestone(title: t)],
-        ),
+        id: id,
+        title: draft.title.trim(),
+        type: draft.type,
+        milestones: [for (final t in draft.milestones) Milestone(title: t)],
+      ),
     };
-    emit(state.copyWith(
-      keyResults: [...state.keyResults, keyResult],
-      draft: const KeyResultDraft(),
-      draftRevision: state.draftRevision + 1,
-    ));
+    emit(
+      state.copyWith(
+        keyResults: [...state.keyResults, keyResult],
+        draft: const KeyResultDraft(),
+        draftRevision: state.draftRevision + 1,
+      ),
+    );
   }
 
   void removeKeyResult(int index) => emit(state.copyWith(keyResults: [...state.keyResults]..removeAt(index)));

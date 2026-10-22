@@ -24,16 +24,19 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: height,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(height / 2)),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 16, fill: 1, color: foreground),
-            const SizedBox(width: 6),
-            Text(label, style: AppText.sans(fontSize, weight: fontWeight, color: foreground)),
-          ],
+    height: height,
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(height / 2)),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, fill: 1, color: foreground),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: context.text.sans(fontSize, weight: fontWeight, color: foreground),
         ),
-      );
+      ],
+    ),
+  );
 }

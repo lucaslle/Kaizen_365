@@ -18,8 +18,21 @@ void main() {
       domain: LifeDomain.finances,
       why: 'Japon',
       keyResults: const [
-        KeyResult(id: 'k1', title: 'Montant', type: KeyResultType.numeric, value: 4900, target: 6000, unit: '€', step: 100),
-        KeyResult(id: 'k2', title: 'Budget', type: KeyResultType.milestones, milestones: [Milestone(title: 'Livret', isDone: true)]),
+        KeyResult(
+          id: 'k1',
+          title: 'Montant',
+          type: KeyResultType.numeric,
+          value: 4900,
+          target: 6000,
+          unit: '€',
+          step: 100,
+        ),
+        KeyResult(
+          id: 'k2',
+          title: 'Budget',
+          type: KeyResultType.milestones,
+          milestones: [Milestone(title: 'Livret', isDone: true)],
+        ),
       ],
       checkins: [
         Checkin(
@@ -27,7 +40,13 @@ void main() {
           date: DateTime(2026, 10, 1),
           mood: Mood.up,
           text: 'On approche',
-          change: const ProgressChange(kind: ProgressChangeKind.value, subject: 'Montant', from: 4400, to: 4900, unit: '€'),
+          change: const ProgressChange(
+            kind: ProgressChangeKind.value,
+            subject: 'Montant',
+            from: 4400,
+            to: 4900,
+            unit: '€',
+          ),
         ),
         Checkin(id: 'c2', date: DateTime(2026, 9, 1)),
       ],

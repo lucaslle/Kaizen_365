@@ -1,30 +1,11 @@
 import 'package:flutter/painting.dart';
 
+/// Colors that keep their meaning whatever the theme: brand, statuses, life domains and moods.
 abstract final class AppColors {
-  static const background = Color(0xFFF4F0E8);
-  static const surface = Color(0xFFFFFCF6);
-  static const sunken = Color(0xFFEDE6DA);
-  static const field = Color(0xFFF9F6F0);
-  static const navBar = Color(0xFFEDE7DC);
-  static const navIndicator = Color(0xFFE3D3C3);
-  static const ink = Color(0xFF1F1C17);
-  static const ink2 = Color(0xFF4A443B);
-  static const ink3 = Color(0xFF3D382F);
-  static const muted = Color(0xFF6E675C);
-  static const border = Color(0xFFE6DFD2);
-  static const inputBorder = Color(0xFFD9D1C2);
-  static const softBorder = Color(0xFFE1D9CB);
-  static const strongBorder = Color(0xFF8C8374);
-  static const dot = Color(0xFFC9C0B0);
-  static const accent = Color(0xFFB4472F);
-  static const onAccent = Color(0xFFFFFCF6);
-  static const accentLight = Color(0xFFF08A6C);
-  static const darkCardMuted = Color(0xFFBDB4A5);
-  static const darkCardText = Color(0xFFD8D0C2);
-  static const darkCardTrack = Color(0xFF3A352D);
-  static const darkCardMonth = Color(0xFFA79E8F);
-  static const toastIcon = Color(0xFF8FD1A5);
-  static const scrim = Color(0x731F1C17);
+  static const brandInk = Color(0xFF1F1C17);
+  static const brandInk2 = Color(0xFF4A443B);
+  static const brandCream = Color(0xFFFFFCF6);
+  static const brandCoral = Color(0xFFF08A6C);
 
   static const onTrackFg = Color(0xFF2B6542);
   static const onTrackBg = Color(0xFFDEEDE2);

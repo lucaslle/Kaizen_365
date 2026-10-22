@@ -28,14 +28,14 @@ class KeyResult {
   int get doneCount => milestones.where((m) => m.isDone).length;
 
   KeyResult copyWith({double? value, List<Milestone>? milestones}) => KeyResult(
-        id: id,
-        title: title,
-        type: type,
-        start: start,
-        value: value ?? this.value,
-        target: target,
-        unit: unit,
-        step: step,
-        milestones: milestones ?? this.milestones,
-      );
+    id: id,
+    title: title,
+    type: type,
+    start: start,
+    value: value ?? this.value,
+    target: target,
+    unit: unit,
+    step: step,
+    milestones: milestones ?? this.milestones,
+  );
 }

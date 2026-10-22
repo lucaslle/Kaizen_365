@@ -21,54 +21,50 @@ class YearReviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocConsumer<YearReviewCubit, YearReviewState>(
-        listenWhen: (previous, current) => current.hasJustClosed,
-        listener: (context, state) => showToast(ScaffoldMessenger.of(context), AppLocale.toastYearClosed.getString(context)),
-        builder: (context, state) {
-          final cubit = context.read<YearReviewCubit>();
-          final now = state.now;
-          final daysLeft = daysInYear(now.year) - dayOfYear(now);
-          final reflections = [
-            (Reflection.proud, AppLocale.reflectProud.getString(context), AppLocale.reflectProudHint),
-            (Reflection.learned, AppLocale.reflectLearned.getString(context), AppLocale.reflectLearnedHint),
-            (Reflection.next, context.formatString(AppLocale.reflectNext, [now.year + 1]), AppLocale.reflectNextHint),
-          ];
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
-            children: [
-              Text(context.formatString(AppLocale.reviewTitle, [now.year]), style: AppText.screenTitle),
-              const SizedBox(height: 4),
-              Text(context.formatString(AppLocale.reviewBody, [daysLeft]), style: AppText.bodyMuted),
-              const SizedBox(height: 18),
-              YearStats(objectives: state.objectives),
-              if (state.objectives.isNotEmpty) ...[
-                const SizedBox(height: 22),
-                Text(AppLocale.perObjective.getString(context), style: AppText.sectionTitle),
-                const SizedBox(height: 18),
-                ObjectiveReviewList(
-                  objectives: state.objectives,
-                  carried: state.review.carriedObjectiveIds,
-                  now: now,
-                ),
-              ],
-              const SizedBox(height: 22),
-              Text(AppLocale.reflectionTitle.getString(context), style: AppText.sectionTitle),
-              for (final (reflection, question, hint) in reflections) ...[
-                const SizedBox(height: 18),
-                Text(question, style: AppText.sans(15, weight: 500)),
-                const SizedBox(height: 8),
-                AppTextField(
-                  label: question,
-                  hint: hint.getString(context),
-                  initialValue: state.review.reflections[reflection] ?? '',
-                  onChanged: (text) => cubit.reflectionChanged(reflection, text),
-                  lines: 3,
-                  style: AppText.sans(15, height: 1.45),
-                ),
-              ],
-              const SizedBox(height: 18),
-              YearClosing(state: state, onPrepareNextYear: onPrepareNextYear),
-            ],
-          );
-        },
+    listenWhen: (previous, current) => current.hasJustClosed,
+    listener: (context, state) => showToast(context, AppLocale.toastYearClosed.getString(context)),
+    builder: (context, state) {
+      final cubit = context.read<YearReviewCubit>();
+      final now = state.now;
+      final daysLeft = daysInYear(now.year) - dayOfYear(now);
+      final reflections = [
+        (Reflection.proud, AppLocale.reflectProud.getString(context), AppLocale.reflectProudHint),
+        (Reflection.learned, AppLocale.reflectLearned.getString(context), AppLocale.reflectLearnedHint),
+        (Reflection.next, context.formatString(AppLocale.reflectNext, [now.year + 1]), AppLocale.reflectNextHint),
+      ];
+      return ListView(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
+        children: [
+          Text(context.formatString(AppLocale.reviewTitle, [now.year]), style: context.text.screenTitle),
+          const SizedBox(height: 4),
+          Text(context.formatString(AppLocale.reviewBody, [daysLeft]), style: context.text.bodyMuted),
+          const SizedBox(height: 18),
+          YearStats(objectives: state.objectives),
+          if (state.objectives.isNotEmpty) ...[
+            const SizedBox(height: 22),
+            Text(AppLocale.perObjective.getString(context), style: context.text.sectionTitle),
+            const SizedBox(height: 18),
+            ObjectiveReviewList(objectives: state.objectives, carried: state.review.carriedObjectiveIds, now: now),
+          ],
+          const SizedBox(height: 22),
+          Text(AppLocale.reflectionTitle.getString(context), style: context.text.sectionTitle),
+          for (final (reflection, question, hint) in reflections) ...[
+            const SizedBox(height: 18),
+            Text(question, style: context.text.sans(15, weight: 500)),
+            const SizedBox(height: 8),
+            AppTextField(
+              label: question,
+              hint: hint.getString(context),
+              initialValue: state.review.reflections[reflection] ?? '',
+              onChanged: (text) => cubit.reflectionChanged(reflection, text),
+              lines: 3,
+              style: context.text.sans(15, height: 1.45),
+            ),
+          ],
+          const SizedBox(height: 18),
+          YearClosing(state: state, onPrepareNextYear: onPrepareNextYear),
+        ],
       );
+    },
+  );
 }

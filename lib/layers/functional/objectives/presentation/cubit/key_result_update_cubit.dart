@@ -29,20 +29,19 @@ class KeyResultUpdateState {
     String? newMilestone,
     int? milestoneRevision,
     String? note,
-  }) =>
-      KeyResultUpdateState(
-        value: value ?? this.value,
-        milestones: milestones ?? this.milestones,
-        valueRevision: valueRevision ?? this.valueRevision,
-        newMilestone: newMilestone ?? this.newMilestone,
-        milestoneRevision: milestoneRevision ?? this.milestoneRevision,
-        note: note ?? this.note,
-      );
+  }) => KeyResultUpdateState(
+    value: value ?? this.value,
+    milestones: milestones ?? this.milestones,
+    valueRevision: valueRevision ?? this.valueRevision,
+    newMilestone: newMilestone ?? this.newMilestone,
+    milestoneRevision: milestoneRevision ?? this.milestoneRevision,
+    note: note ?? this.note,
+  );
 }
 
 class KeyResultUpdateCubit extends Cubit<KeyResultUpdateState> {
   KeyResultUpdateCubit(this.keyResult)
-      : super(KeyResultUpdateState(value: keyResult.value, milestones: List.unmodifiable(keyResult.milestones)));
+    : super(KeyResultUpdateState(value: keyResult.value, milestones: List.unmodifiable(keyResult.milestones)));
 
   final KeyResult keyResult;
 
@@ -53,27 +52,28 @@ class KeyResultUpdateCubit extends Cubit<KeyResultUpdateState> {
 
   void percentChanged(double value) => emit(state.copyWith(value: value));
 
-  void decrement() => emit(state.copyWith(
-        value: max(keyResult.start, state.value - keyResult.step),
-        valueRevision: state.valueRevision + 1,
-      ));
+  void decrement() => emit(
+    state.copyWith(value: max(keyResult.start, state.value - keyResult.step), valueRevision: state.valueRevision + 1),
+  );
 
   void increment() => emit(state.copyWith(value: state.value + keyResult.step, valueRevision: state.valueRevision + 1));
 
-  void toggleMilestone(int index) => emit(state.copyWith(
-        milestones: List.unmodifiable([...state.milestones]..[index] = state.milestones[index].toggled()),
-      ));
+  void toggleMilestone(int index) => emit(
+    state.copyWith(milestones: List.unmodifiable([...state.milestones]..[index] = state.milestones[index].toggled())),
+  );
 
   void newMilestoneChanged(String text) => emit(state.copyWith(newMilestone: text));
 
   void addMilestone() {
     final title = state.newMilestone.trim();
     if (title.isEmpty) return;
-    emit(state.copyWith(
-      milestones: List.unmodifiable([...state.milestones, Milestone(title: title)]),
-      newMilestone: '',
-      milestoneRevision: state.milestoneRevision + 1,
-    ));
+    emit(
+      state.copyWith(
+        milestones: List.unmodifiable([...state.milestones, Milestone(title: title)]),
+        newMilestone: '',
+        milestoneRevision: state.milestoneRevision + 1,
+      ),
+    );
   }
 
   void noteChanged(String text) => emit(state.copyWith(note: text));

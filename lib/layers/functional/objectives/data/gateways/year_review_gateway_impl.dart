@@ -15,12 +15,12 @@ class YearReviewGatewayImpl implements YearReviewGateway {
 
   @override
   YearReview load() => YearReview(
-        isClosed: _preferences.getBool(PreferenceKey.isYearClosed) ?? false,
-        carriedObjectiveIds: {...?_preferences.getStringList(PreferenceKey.carriedObjectiveIds)},
-        reflections: {
-          for (final MapEntry(:key, :value) in _reflectionKeys.entries) key: _preferences.getString(value) ?? '',
-        },
-      );
+    isClosed: _preferences.getBool(PreferenceKey.isYearClosed) ?? false,
+    carriedObjectiveIds: {...?_preferences.getStringList(PreferenceKey.carriedObjectiveIds)},
+    reflections: {
+      for (final MapEntry(:key, :value) in _reflectionKeys.entries) key: _preferences.getString(value) ?? '',
+    },
+  );
 
   @override
   Future<void> save(YearReview review) async {

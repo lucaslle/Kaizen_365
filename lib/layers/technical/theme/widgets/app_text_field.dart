@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../app_colors.dart';
+import '../app_palette.dart';
 import '../app_text.dart';
 
 class AppTextField extends StatelessWidget {
@@ -13,7 +13,7 @@ class AppTextField extends StatelessWidget {
     this.hint,
     this.lines = 1,
     this.style,
-    this.fill = AppColors.surface,
+    this.fill,
     this.radius = 16,
     this.verticalPadding = 14,
     this.keyboardType,
@@ -30,7 +30,7 @@ class AppTextField extends StatelessWidget {
   final String? hint;
   final int lines;
   final TextStyle? style;
-  final Color fill;
+  final Color? fill;
   final double radius;
   final double verticalPadding;
   final TextInputType? keyboardType;
@@ -43,10 +43,10 @@ class AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     OutlineInputBorder border(Color color) => OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius),
-          borderSide: hasBorder ? BorderSide(color: color, width: 1.5) : BorderSide.none,
-        );
-    final textStyle = style ?? AppText.sans(16);
+      borderRadius: BorderRadius.circular(radius),
+      borderSide: hasBorder ? BorderSide(color: color, width: 1.5) : BorderSide.none,
+    );
+    final textStyle = style ?? context.text.sans(16);
     return Semantics(
       label: label,
       child: TextFormField(
@@ -63,13 +63,13 @@ class AppTextField extends StatelessWidget {
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: textStyle.copyWith(color: AppColors.muted),
+          hintStyle: textStyle.copyWith(color: context.palette.muted),
           filled: true,
-          fillColor: fill,
+          fillColor: fill ?? context.palette.surface,
           isDense: true,
           contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: verticalPadding),
-          enabledBorder: border(AppColors.inputBorder),
-          focusedBorder: border(AppColors.accent),
+          enabledBorder: border(context.palette.inputBorder),
+          focusedBorder: border(context.palette.accent),
         ),
       ),
     );

@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/localization/app_locale.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_button.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
 import '../../domain/entities/progress.dart';
 import '../cubit/year_review_cubit.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import '../cubit/year_review_state.dart';
 
 class YearClosing extends StatelessWidget {
@@ -36,16 +36,18 @@ class YearClosing extends StatelessWidget {
       _ => context.formatString(AppLocale.carriedMany, [carried, year + 1]),
     };
     return AppCard(
-      color: AppColors.ink,
-      borderColor: null,
+      color: context.palette.inverse,
+      hasBorder: false,
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 12,
         children: [
-          Text(context.formatString(AppLocale.yearClosed, [year]),
-              style: AppText.sans(22, weight: 600, tracking: -0.02, color: AppColors.onAccent)),
-          Text(carriedText, style: AppText.sans(15, height: 1.45, color: AppColors.darkCardText)),
+          Text(
+            context.formatString(AppLocale.yearClosed, [year]),
+            style: context.text.sans(22, weight: 600, tracking: -0.02, color: context.palette.onInverse),
+          ),
+          Text(carriedText, style: context.text.sans(15, height: 1.45, color: context.palette.inverseText)),
           AppButton(
             label: context.formatString(AppLocale.prepareNext, [year + 1]),
             onPressed: onPrepareNextYear,

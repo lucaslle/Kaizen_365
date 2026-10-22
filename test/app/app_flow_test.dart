@@ -19,14 +19,15 @@ import 'package:kaizen365/layers/functional/objectives/domain/use_cases/save_yea
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/toggle_milestone_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/update_key_result_use_case.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/use_cases/watch_objectives_use_case.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/entities/user_settings.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/gateways/reminder_gateway.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/gateways/settings_gateway.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/use_cases/complete_onboarding_use_case.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/use_cases/get_settings_use_case.dart';
-import 'package:kaizen365/layers/functional/onboarding/domain/use_cases/schedule_checkin_reminders_use_case.dart';
+import 'package:kaizen365/layers/functional/profile/domain/entities/user_settings.dart';
+import 'package:kaizen365/layers/functional/profile/domain/gateways/reminder_gateway.dart';
+import 'package:kaizen365/layers/functional/profile/domain/gateways/settings_gateway.dart';
+import 'package:kaizen365/layers/functional/profile/domain/use_cases/complete_onboarding_use_case.dart';
+import 'package:kaizen365/layers/functional/profile/domain/use_cases/get_settings_use_case.dart';
+import 'package:kaizen365/layers/functional/profile/domain/use_cases/schedule_checkin_reminders_use_case.dart';
+import 'package:kaizen365/layers/functional/profile/domain/use_cases/update_settings_use_case.dart';
 
-import '../layers/functional/onboarding/fake_reminder_gateway.dart';
+import '../layers/functional/profile/fake_reminder_gateway.dart';
 import 'package:kaizen365/layers/technical/clock/clock.dart';
 import 'package:kaizen365/layers/technical/localization/app_locale.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,8 +69,7 @@ class _MemoryYearReviewGateway implements YearReviewGateway {
   Future<void> save(YearReview review) async => this.review = review;
 }
 
-Future<void> _loadFont(String family, String asset) =>
-    (FontLoader(family)..addFont(rootBundle.load(asset))).load();
+Future<void> _loadFont(String family, String asset) => (FontLoader(family)..addFont(rootBundle.load(asset))).load();
 
 void main() {
   setUpAll(() async {
@@ -78,8 +78,10 @@ void main() {
     await initializeDateFormatting('fr_FR');
     await _loadFont('BricolageGrotesque', 'assets/fonts/bricolage_grotesque.ttf');
     await _loadFont('JetBrainsMono', 'assets/fonts/jetbrains_mono.ttf');
-    await _loadFont('packages/material_symbols_icons/MaterialSymbolsRounded',
-        'packages/material_symbols_icons/lib/fonts/MaterialSymbolsRounded.ttf');
+    await _loadFont(
+      'packages/material_symbols_icons/MaterialSymbolsRounded',
+      'packages/material_symbols_icons/lib/fonts/MaterialSymbolsRounded.ttf',
+    );
     final localization = FlutterLocalization.instance;
     await localization.ensureInitialized();
     localization.init(mapLocales: [const MapLocale('fr', AppLocale.fr)], initLanguageCode: 'fr');
@@ -99,7 +101,8 @@ void main() {
       ..registerLazySingleton(() => SaveYearReviewUseCase(getIt()))
       ..registerLazySingleton(() => GetSettingsUseCase(getIt()))
       ..registerLazySingleton(() => ScheduleCheckinRemindersUseCase(getIt(), getIt()))
-      ..registerLazySingleton(() => CompleteOnboardingUseCase(getIt(), getIt(), getIt()));
+      ..registerLazySingleton(() => CompleteOnboardingUseCase(getIt(), getIt(), getIt()))
+      ..registerLazySingleton(() => UpdateSettingsUseCase(getIt(), getIt(), getIt()));
   });
 
   testWidgets('onboarding, creating an objective and updating it', (tester) async {
@@ -163,6 +166,20 @@ void main() {
     await shot('12_journal');
     await tap('Bilan');
     await shot('13_review');
+
+    await tap('Objectifs');
+    await tester.tap(find.byTooltip('Ouvrir mon profil'));
+    await tester.pumpAndSettle();
+    await tap('Toutes les 2 semaines');
+    await shot('14_profile');
+    await tester.tap(find.bySemanticsLabel('Nuit'));
+    await tester.pumpAndSettle();
+    await shot('15_profile_night');
+    await tester.tap(find.byTooltip('Retour'));
+    await tester.pumpAndSettle();
+    await shot('16_home_night');
+    await tap('Bilan');
+    await shot('17_review_night');
     expect(tester.takeException(), isNull);
   });
 }

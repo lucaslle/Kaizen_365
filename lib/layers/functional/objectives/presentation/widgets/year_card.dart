@@ -3,9 +3,9 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/localization/formatters.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import '../../domain/entities/progress.dart';
 
 class YearCard extends StatelessWidget {
@@ -22,8 +22,8 @@ class YearCard extends StatelessWidget {
     final currentMonth = now.month - 1;
     final initials = Formatters.monthInitials(now.year);
     return AppCard(
-      color: AppColors.ink,
-      borderColor: null,
+      color: context.palette.inverse,
+      hasBorder: false,
       radius: 24,
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -33,21 +33,40 @@ class YearCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(context.formatString(AppLocale.yearLabel, [now.year]).toUpperCase(),
-                  style: AppText.overline.copyWith(color: AppColors.darkCardMuted)),
-              Text(context.formatString(AppLocale.dayCounter, [day, remaining]),
-                  style: AppText.mono(12, weight: 400, color: AppColors.darkCardMuted)),
+              Text(
+                context.formatString(AppLocale.yearLabel, [now.year]).toUpperCase(),
+                style: context.text.overline.copyWith(color: context.palette.inverseMuted),
+              ),
+              Text(
+                context.formatString(AppLocale.dayCounter, [day, remaining]),
+                style: context.text.mono(12, weight: 400, color: context.palette.inverseMuted),
+              ),
             ],
           ),
           Row(
             children: [
-              Expanded(child: _Stat(Formatters.percent(score), AppLocale.yourProgress.getString(context), AppColors.accentLight)),
+              Expanded(
+                child: _Stat(
+                  Formatters.percent(score),
+                  AppLocale.yourProgress.getString(context),
+                  context.palette.accentLight,
+                ),
+              ),
               const SizedBox(width: 12),
-              Expanded(child: _Stat(Formatters.percent(expected), AppLocale.timeElapsed.getString(context), AppColors.onAccent)),
+              Expanded(
+                child: _Stat(
+                  Formatters.percent(expected),
+                  AppLocale.timeElapsed.getString(context),
+                  context.palette.onInverse,
+                ),
+              ),
             ],
           ),
           Semantics(
-            label: context.formatString(AppLocale.yearSemantics, [Formatters.percent(expected), Formatters.monthName(now)]),
+            label: context.formatString(AppLocale.yearSemantics, [
+              Formatters.percent(expected),
+              Formatters.monthName(now),
+            ]),
             child: ExcludeSemantics(
               child: Row(
                 spacing: 3,
@@ -62,13 +81,17 @@ class YearCard extends StatelessWidget {
                             child: LinearProgressIndicator(
                               value: (expected * 12 - m).clamp(0, 1),
                               minHeight: 8,
-                              color: AppColors.onAccent,
-                              backgroundColor: AppColors.darkCardTrack,
+                              color: context.palette.onInverse,
+                              backgroundColor: context.palette.inverseTrack,
                             ),
                           ),
-                          Text(initials[m],
-                              style: AppText.mono(11,
-                                  color: m == currentMonth ? AppColors.accentLight : AppColors.darkCardMonth)),
+                          Text(
+                            initials[m],
+                            style: context.text.mono(
+                              11,
+                              color: m == currentMonth ? context.palette.accentLight : context.palette.inverseMonth,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -91,11 +114,11 @@ class _Stat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 2,
-        children: [
-          Text(value, style: AppText.mono(44, weight: 600, height: 1, tracking: -0.04, color: color)),
-          Text(label, style: AppText.sans(14, color: AppColors.darkCardText)),
-        ],
-      );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    spacing: 2,
+    children: [
+      Text(value, style: context.text.mono(44, weight: 600, height: 1, tracking: -0.04, color: color)),
+      Text(label, style: context.text.sans(14, color: context.palette.inverseText)),
+    ],
+  );
 }

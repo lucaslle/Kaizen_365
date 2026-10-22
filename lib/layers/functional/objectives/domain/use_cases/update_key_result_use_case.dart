@@ -25,11 +25,8 @@ class UpdateKeyResultUseCase {
     final updated = switch (keyResult.type) {
       KeyResultType.percent => keyResult.copyWith(value: value.roundToDouble().clamp(0, 100)),
       KeyResultType.numeric => keyResult.copyWith(
-          value: value.clamp(
-            min(keyResult.start, keyResult.target),
-            max(keyResult.start, keyResult.target) * 2,
-          ),
-        ),
+        value: value.clamp(min(keyResult.start, keyResult.target), max(keyResult.start, keyResult.target) * 2),
+      ),
       KeyResultType.milestones => keyResult.copyWith(milestones: milestones),
     };
     final change = _changeBetween(keyResult, updated);
@@ -47,29 +44,28 @@ class UpdateKeyResultUseCase {
   }
 
   ProgressChange? _changeBetween(KeyResult before, KeyResult after) => switch (before.type) {
-        KeyResultType.numeric when before.value != after.value => ProgressChange(
-            kind: ProgressChangeKind.value,
-            subject: before.title,
-            from: before.value,
-            to: after.value,
-            unit: before.unit,
-          ),
-        KeyResultType.percent when before.value != after.value => ProgressChange(
-            kind: ProgressChangeKind.percent,
-            subject: before.title,
-            from: before.value,
-            to: after.value,
-          ),
-        KeyResultType.milestones
-            when before.doneCount != after.doneCount ||
-                before.milestones.length != after.milestones.length =>
-          ProgressChange(
-            kind: ProgressChangeKind.milestones,
-            subject: before.title,
-            from: before.doneCount.toDouble(),
-            to: after.doneCount.toDouble(),
-            total: after.milestones.length,
-          ),
-        _ => null,
-      };
+    KeyResultType.numeric when before.value != after.value => ProgressChange(
+      kind: ProgressChangeKind.value,
+      subject: before.title,
+      from: before.value,
+      to: after.value,
+      unit: before.unit,
+    ),
+    KeyResultType.percent when before.value != after.value => ProgressChange(
+      kind: ProgressChangeKind.percent,
+      subject: before.title,
+      from: before.value,
+      to: after.value,
+    ),
+    KeyResultType.milestones
+        when before.doneCount != after.doneCount || before.milestones.length != after.milestones.length =>
+      ProgressChange(
+        kind: ProgressChangeKind.milestones,
+        subject: before.title,
+        from: before.doneCount.toDouble(),
+        to: after.doneCount.toDouble(),
+        total: after.milestones.length,
+      ),
+    _ => null,
+  };
 }

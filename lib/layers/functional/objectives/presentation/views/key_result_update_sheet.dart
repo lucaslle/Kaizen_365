@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/localization/app_locale.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_button.dart';
 import '../../../../technical/theme/widgets/app_sheet.dart';
@@ -15,6 +14,7 @@ import '../../domain/entities/progress.dart';
 import '../cubit/key_result_update_cubit.dart';
 import '../cubit/objectives_cubit.dart';
 import '../styles/objective_texts.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import '../widgets/key_result_editors.dart';
 
 class KeyResultUpdateSheet extends StatelessWidget {
@@ -50,8 +50,8 @@ class KeyResultUpdateSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 4,
             children: [
-              Text(context.typeLabel(keyResult.type).toUpperCase(), style: AppText.overline),
-              Text(keyResult.title, style: AppText.sheetTitle),
+              Text(context.typeLabel(keyResult.type).toUpperCase(), style: context.text.overline),
+              Text(keyResult.title, style: context.text.sheetTitle),
             ],
           ),
           switch (keyResult.type) {
@@ -59,14 +59,14 @@ class KeyResultUpdateSheet extends StatelessWidget {
             KeyResultType.percent => PercentEditor(state: state),
             KeyResultType.milestones => MilestonesEditor(state: state),
           },
-          ProgressTrack(value: keyResultProgress(cubit.preview), color: AppColors.accent, height: 8),
+          ProgressTrack(value: keyResultProgress(cubit.preview), color: context.palette.accent, height: 8),
           AppTextField(
             label: AppLocale.noteLabel.getString(context),
             hint: AppLocale.noteHint.getString(context),
             onChanged: cubit.noteChanged,
-            fill: AppColors.field,
+            fill: context.palette.field,
             radius: 14,
-            style: AppText.sans(15),
+            style: context.text.sans(15),
           ),
           Row(
             spacing: 10,
@@ -84,12 +84,12 @@ class KeyResultUpdateSheet extends StatelessWidget {
                   height: 52,
                   onPressed: () {
                     context.read<ObjectivesCubit>().updateKeyResult(
-                          objective,
-                          keyResult,
-                          value: state.value,
-                          milestones: state.milestones,
-                          note: state.note,
-                        );
+                      objective,
+                      keyResult,
+                      value: state.value,
+                      milestones: state.milestones,
+                      note: state.note,
+                    );
                     Navigator.of(context).pop();
                   },
                 ),

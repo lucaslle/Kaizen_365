@@ -27,18 +27,13 @@ class ObjectivesState {
   }
 
   ObjectivesState copyWith({DateTime? now, ObjectivesStatus? status, List<Objective>? objectives}) => ObjectivesState(
-        now: now ?? this.now,
-        status: status ?? this.status,
-        objectives: objectives ?? this.objectives,
-        notice: notice,
-        noticeId: noticeId,
-      );
+    now: now ?? this.now,
+    status: status ?? this.status,
+    objectives: objectives ?? this.objectives,
+    notice: notice,
+    noticeId: noticeId,
+  );
 
-  ObjectivesState withNotice(ObjectivesNotice notice) => ObjectivesState(
-        now: now,
-        status: status,
-        objectives: objectives,
-        notice: notice,
-        noticeId: noticeId + 1,
-      );
+  ObjectivesState withNotice(ObjectivesNotice notice) =>
+      ObjectivesState(now: now, status: status, objectives: objectives, notice: notice, noticeId: noticeId + 1);
 }

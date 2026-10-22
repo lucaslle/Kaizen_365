@@ -11,10 +11,15 @@ import '../fake_objective_gateway.dart';
 
 void main() {
   const km = KeyResult(id: 'k1', title: 'Kilomètres', type: KeyResultType.numeric, value: 590, target: 900, unit: 'km');
-  const plan = KeyResult(id: 'k2', title: 'Plan', type: KeyResultType.milestones, milestones: [
-    Milestone(title: '10 km'),
-    Milestone(title: 'Semi', isDone: true),
-  ]);
+  const plan = KeyResult(
+    id: 'k2',
+    title: 'Plan',
+    type: KeyResultType.milestones,
+    milestones: [
+      Milestone(title: '10 km'),
+      Milestone(title: 'Semi', isDone: true),
+    ],
+  );
   const objective = Objective(id: 'o1', title: 'Semi', domain: LifeDomain.health, keyResults: [km, plan]);
   late FakeObjectiveGateway gateway;
   DateTime clock() => DateTime(2026, 10, 13);
@@ -27,8 +32,10 @@ void main() {
     expect(hasCheckin, isTrue);
     expect(saved.keyResults.first.value, 610);
     final change = saved.checkins.single.change!;
-    expect((change.kind, change.subject, change.from, change.to, change.unit),
-        (ProgressChangeKind.value, 'Kilomètres', 590, 610, 'km'));
+    expect(
+      (change.kind, change.subject, change.from, change.to, change.unit),
+      (ProgressChangeKind.value, 'Kilomètres', 590, 610, 'km'),
+    );
   });
 
   test('numeric value is clamped between start and twice the target', () async {

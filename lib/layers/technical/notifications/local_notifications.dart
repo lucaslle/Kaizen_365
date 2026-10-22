@@ -69,15 +69,15 @@ class LocalNotifications {
   }
 
   Future<void> _schedule(int id, tz.TZDateTime at, DateTimeComponents? repeat) => _plugin.zonedSchedule(
-        id: id,
-        scheduledDate: at,
-        title: _texts.title,
-        body: _texts.body,
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        matchDateTimeComponents: repeat,
-        notificationDetails: NotificationDetails(
-          android: AndroidNotificationDetails('checkin_reminders', _texts.channelName),
-          iOS: const DarwinNotificationDetails(),
-        ),
-      );
+    id: id,
+    scheduledDate: at,
+    title: _texts.title,
+    body: _texts.body,
+    androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+    matchDateTimeComponents: repeat,
+    notificationDetails: NotificationDetails(
+      android: AndroidNotificationDetails('checkin_reminders', _texts.channelName),
+      iOS: const DarwinNotificationDetails(),
+    ),
+  );
 }

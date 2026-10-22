@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../domain/entities/checkin.dart';
 import '../../domain/entities/progress_change.dart';
 import '../styles/mood_style.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import '../styles/objective_texts.dart';
 
 class CheckinMood extends StatelessWidget {
@@ -23,8 +23,8 @@ class CheckinMood extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       spacing: 4,
       children: [
-        Icon(style.icon, size: 17, color: AppColors.muted),
-        Text(style.labelKey.getString(context), style: AppText.caption),
+        Icon(style.icon, size: 17, color: context.palette.muted),
+        Text(style.labelKey.getString(context), style: context.text.caption),
       ],
     );
   }
@@ -45,7 +45,7 @@ class CheckinBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 6,
       children: [
-        if (text.isNotEmpty) Text(text, style: AppText.body),
+        if (text.isNotEmpty) Text(text, style: context.text.body),
         if (change != null && !isCreation)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -54,8 +54,13 @@ class CheckinBody extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 6,
               children: [
-                const Icon(Symbols.trending_up_rounded, size: 16, color: AppColors.muted),
-                Flexible(child: Text(context.changeText(change), style: AppText.mono(13, height: 1.4, color: AppColors.muted))),
+                Icon(Symbols.trending_up_rounded, size: 16, color: context.palette.muted),
+                Flexible(
+                  child: Text(
+                    context.changeText(change),
+                    style: context.text.mono(13, height: 1.4, color: context.palette.muted),
+                  ),
+                ),
               ],
             ),
           ),

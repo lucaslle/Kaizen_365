@@ -3,11 +3,11 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/localization/formatters.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
 import '../../domain/entities/key_result.dart';
 import '../../domain/entities/objective.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import '../../domain/entities/progress.dart';
 
 class YearStats extends StatelessWidget {
@@ -18,10 +18,12 @@ class YearStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final keyResults = objectives.expand((o) => o.keyResults).toList();
-    final milestones =
-        keyResults.where((k) => k.type == KeyResultType.milestones).expand((k) => k.milestones).toList();
+    final milestones = keyResults.where((k) => k.type == KeyResultType.milestones).expand((k) => k.milestones).toList();
     final stats = [
-      ('${objectives.where((o) => objectiveProgress(o) >= 0.999).length}/${objectives.length}', AppLocale.statObjectives),
+      (
+        '${objectives.where((o) => objectiveProgress(o) >= 0.999).length}/${objectives.length}',
+        AppLocale.statObjectives,
+      ),
       ('${keyResults.where((k) => keyResultProgress(k) >= 1).length}/${keyResults.length}', AppLocale.statKeyResults),
       ('${milestones.where((m) => m.isDone).length}/${milestones.length}', AppLocale.statMilestones),
       ('${objectives.fold(0, (sum, o) => sum + o.checkins.length)}', AppLocale.statCheckins),
@@ -30,8 +32,8 @@ class YearStats extends StatelessWidget {
       spacing: 10,
       children: [
         AppCard(
-          color: AppColors.accent,
-          borderColor: null,
+          color: context.palette.accent,
+          hasBorder: false,
           padding: const EdgeInsets.all(20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -41,13 +43,21 @@ class YearStats extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 4,
                   children: [
-                    Text(AppLocale.yearScore.getString(context).toUpperCase(), style: AppText.overline.copyWith(color: AppColors.onAccent)),
-                    Text(AppLocale.yearScoreBody.getString(context), style: AppText.sans(15, color: AppColors.onAccent)),
+                    Text(
+                      AppLocale.yearScore.getString(context).toUpperCase(),
+                      style: context.text.overline.copyWith(color: context.palette.onAccent),
+                    ),
+                    Text(
+                      AppLocale.yearScoreBody.getString(context),
+                      style: context.text.sans(15, color: context.palette.onAccent),
+                    ),
                   ],
                 ),
               ),
-              Text(Formatters.percent(yearScore(objectives)),
-                  style: AppText.mono(52, weight: 600, height: 1, tracking: -0.04, color: AppColors.onAccent)),
+              Text(
+                Formatters.percent(yearScore(objectives)),
+                style: context.text.mono(52, weight: 600, height: 1, tracking: -0.04, color: context.palette.onAccent),
+              ),
             ],
           ),
         ),
@@ -66,8 +76,11 @@ class YearStats extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 6,
                         children: [
-                          Text(value, style: AppText.mono(26, weight: 600, height: 1, tracking: -0.03)),
-                          Text(label.getString(context), style: AppText.sans(14, height: 1.3, color: AppColors.muted)),
+                          Text(value, style: context.text.mono(26, weight: 600, height: 1, tracking: -0.03)),
+                          Text(
+                            label.getString(context),
+                            style: context.text.sans(14, height: 1.3, color: context.palette.muted),
+                          ),
                         ],
                       ),
                     ),

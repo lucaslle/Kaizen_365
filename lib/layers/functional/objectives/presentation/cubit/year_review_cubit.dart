@@ -13,7 +13,7 @@ import 'year_review_state.dart';
 
 class YearReviewCubit extends Cubit<YearReviewState> {
   YearReviewCubit(GetYearReviewUseCase getReview, this._saveReview, this._watchObjectives, this._clock)
-      : super(YearReviewState(review: getReview(), now: _clock()));
+    : super(YearReviewState(review: getReview(), now: _clock()));
 
   final SaveYearReviewUseCase _saveReview;
   final WatchObjectivesUseCase _watchObjectives;

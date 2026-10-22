@@ -8,68 +8,67 @@ import '../../domain/entities/progress_change.dart';
 
 abstract final class ObjectiveDto {
   static Map<String, dynamic> toJson(Objective o) => {
-        'id': o.id,
-        'title': o.title,
-        'domain': o.domain.name,
-        'why': o.why,
-        'keyResults': [for (final k in o.keyResults) _keyResultToJson(k)],
-        'checkins': [for (final c in o.checkins) _checkinToJson(c)],
-      };
+    'id': o.id,
+    'title': o.title,
+    'domain': o.domain.name,
+    'why': o.why,
+    'keyResults': [for (final k in o.keyResults) _keyResultToJson(k)],
+    'checkins': [for (final c in o.checkins) _checkinToJson(c)],
+  };
 
   static Objective fromJson(Map<String, dynamic> json) => Objective(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        domain: LifeDomain.values.byName(json['domain'] as String),
-        why: json['why'] as String? ?? '',
-        keyResults: [for (final k in json['keyResults'] as List) _keyResultFromJson(k as Map<String, dynamic>)],
-        checkins: [for (final c in json['checkins'] as List) _checkinFromJson(c as Map<String, dynamic>)],
-      );
+    id: json['id'] as String,
+    title: json['title'] as String,
+    domain: LifeDomain.values.byName(json['domain'] as String),
+    why: json['why'] as String? ?? '',
+    keyResults: [for (final k in json['keyResults'] as List) _keyResultFromJson(k as Map<String, dynamic>)],
+    checkins: [for (final c in json['checkins'] as List) _checkinFromJson(c as Map<String, dynamic>)],
+  );
 
   static Map<String, dynamic> _keyResultToJson(KeyResult k) => {
-        'id': k.id,
-        'title': k.title,
-        'type': k.type.name,
-        'start': k.start,
-        'value': k.value,
-        'target': k.target,
-        'unit': k.unit,
-        'step': k.step,
-        'milestones': [
-          for (final m in k.milestones) {'title': m.title, 'isDone': m.isDone},
-        ],
-      };
+    'id': k.id,
+    'title': k.title,
+    'type': k.type.name,
+    'start': k.start,
+    'value': k.value,
+    'target': k.target,
+    'unit': k.unit,
+    'step': k.step,
+    'milestones': [
+      for (final m in k.milestones) {'title': m.title, 'isDone': m.isDone},
+    ],
+  };
 
   static KeyResult _keyResultFromJson(Map<String, dynamic> json) => KeyResult(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        type: KeyResultType.values.byName(json['type'] as String),
-        start: (json['start'] as num).toDouble(),
-        value: (json['value'] as num).toDouble(),
-        target: (json['target'] as num).toDouble(),
-        unit: json['unit'] as String,
-        step: (json['step'] as num).toDouble(),
-        milestones: [
-          for (final m in json['milestones'] as List)
-            Milestone(title: m['title'] as String, isDone: m['isDone'] as bool),
-        ],
-      );
+    id: json['id'] as String,
+    title: json['title'] as String,
+    type: KeyResultType.values.byName(json['type'] as String),
+    start: (json['start'] as num).toDouble(),
+    value: (json['value'] as num).toDouble(),
+    target: (json['target'] as num).toDouble(),
+    unit: json['unit'] as String,
+    step: (json['step'] as num).toDouble(),
+    milestones: [
+      for (final m in json['milestones'] as List) Milestone(title: m['title'] as String, isDone: m['isDone'] as bool),
+    ],
+  );
 
   static Map<String, dynamic> _checkinToJson(Checkin c) => {
-        'id': c.id,
-        'date': c.date.toIso8601String(),
-        'mood': c.mood?.name,
-        'text': c.text,
-        'change': c.change == null
-            ? null
-            : {
-                'kind': c.change!.kind.name,
-                'subject': c.change!.subject,
-                'from': c.change!.from,
-                'to': c.change!.to,
-                'total': c.change!.total,
-                'unit': c.change!.unit,
-              },
-      };
+    'id': c.id,
+    'date': c.date.toIso8601String(),
+    'mood': c.mood?.name,
+    'text': c.text,
+    'change': c.change == null
+        ? null
+        : {
+            'kind': c.change!.kind.name,
+            'subject': c.change!.subject,
+            'from': c.change!.from,
+            'to': c.change!.to,
+            'total': c.change!.total,
+            'unit': c.change!.unit,
+          },
+  };
 
   static Checkin _checkinFromJson(Map<String, dynamic> json) {
     final change = json['change'] as Map<String, dynamic>?;

@@ -12,6 +12,6 @@ abstract final class Formatters {
   static String monthName(DateTime date) => DateFormat.MMMM(locale).format(date);
 
   static List<String> monthInitials(int year) => [
-        for (var m = 1; m <= 12; m++) DateFormat('MMMMM', locale).format(DateTime(year, m)),
-      ];
+    for (var m = 1; m <= 12; m++) DateFormat('MMMMM', locale).format(DateTime(year, m)),
+  ];
 }

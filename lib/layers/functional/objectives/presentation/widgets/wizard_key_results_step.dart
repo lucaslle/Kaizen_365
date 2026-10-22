@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/localization/app_locale.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
 import '../cubit/objective_wizard_cubit.dart';
 import '../cubit/objective_wizard_state.dart';
 import 'key_result_draft_form.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import 'wizard_key_result_tile.dart';
 
 class WizardKeyResultsStep extends StatelessWidget {
@@ -27,8 +27,8 @@ class WizardKeyResultsStep extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
           children: [
-            Text(AppLocale.wizardHowTitle.getString(context), style: AppText.stepTitle),
-            Text(AppLocale.wizardHowBody.getString(context), style: AppText.bodyMuted),
+            Text(AppLocale.wizardHowTitle.getString(context), style: context.text.stepTitle),
+            Text(AppLocale.wizardHowBody.getString(context), style: context.text.bodyMuted),
           ],
         ),
         if (state.keyResults.isNotEmpty)
@@ -47,7 +47,7 @@ class WizardKeyResultsStep extends StatelessWidget {
           key: ValueKey(state.draftRevision),
           radius: 20,
           padding: const EdgeInsets.all(16),
-          borderColor: AppColors.inputBorder,
+          borderColor: context.palette.inputBorder,
           isDashed: true,
           child: KeyResultDraftForm(state: state),
         ),

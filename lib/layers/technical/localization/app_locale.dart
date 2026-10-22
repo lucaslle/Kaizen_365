@@ -173,6 +173,15 @@ mixin AppLocale {
   static const reminderNotificationTitle = 'reminderNotificationTitle';
   static const reminderNotificationBody = 'reminderNotificationBody';
   static const reminderChannelName = 'reminderChannelName';
+  static const themeSand = 'themeSand';
+  static const themeNight = 'themeNight';
+  static const themeForest = 'themeForest';
+  static const themeOcean = 'themeOcean';
+  static const themeLavender = 'themeLavender';
+  static const profileTitle = 'profileTitle';
+  static const openProfile = 'openProfile';
+  static const themeLabel = 'themeLabel';
+  static const profileReminderHelp = 'profileReminderHelp';
 
   static const Map<String, dynamic> fr = {
     appName: 'Kaizen 365',
@@ -349,5 +358,14 @@ mixin AppLocale {
     reminderNotificationTitle: 'C\'est l\'heure du check-in',
     reminderNotificationBody: 'Prends deux minutes pour faire le point sur tes objectifs.',
     reminderChannelName: 'Rappels de check-in',
+    themeSand: 'Sable',
+    themeNight: 'Nuit',
+    themeForest: 'Forêt',
+    themeOcean: 'Océan',
+    themeLavender: 'Lavande',
+    profileTitle: 'Profil',
+    openProfile: 'Ouvrir mon profil',
+    themeLabel: 'Thème',
+    profileReminderHelp: 'Les rappels arrivent vers 18 h. Ils sont reprogrammés dès que tu changes de rythme.',
   };
 }

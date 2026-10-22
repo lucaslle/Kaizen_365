@@ -5,13 +5,13 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../technical/localization/app_locale.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_button.dart';
 import '../../../../technical/theme/widgets/app_text_field.dart';
 import '../../../../technical/theme/widgets/segmented_pill.dart';
 import '../../domain/entities/key_result.dart';
 import '../cubit/objective_wizard_cubit.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import '../cubit/objective_wizard_state.dart';
 
 class KeyResultDraftForm extends StatelessWidget {
@@ -24,26 +24,31 @@ class KeyResultDraftForm extends StatelessWidget {
     final cubit = context.read<ObjectiveWizardCubit>();
     final draft = state.draft;
     final decimal = [FilteringTextInputFormatter.allow(RegExp(r'[-0-9.,]'))];
-    Widget numberField(String caption, String label, String value, String? hint, ValueChanged<String> onChanged,
-            {bool isNumber = true}) =>
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 4,
-          children: [
-            Text(caption.getString(context), style: AppText.sans(12, color: AppColors.muted)),
-            AppTextField(
-              label: label.getString(context),
-              hint: hint?.getString(context),
-              initialValue: value,
-              onChanged: onChanged,
-              fill: AppColors.field,
-              radius: 12,
-              keyboardType: isNumber ? const TextInputType.numberWithOptions(decimal: true, signed: true) : null,
-              inputFormatters: isNumber ? decimal : null,
-              style: isNumber ? AppText.mono(15) : AppText.sans(15),
-            ),
-          ],
-        );
+    Widget numberField(
+      String caption,
+      String label,
+      String value,
+      String? hint,
+      ValueChanged<String> onChanged, {
+      bool isNumber = true,
+    }) => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 4,
+      children: [
+        Text(caption.getString(context), style: context.text.sans(12, color: context.palette.muted)),
+        AppTextField(
+          label: label.getString(context),
+          hint: hint?.getString(context),
+          initialValue: value,
+          onChanged: onChanged,
+          fill: context.palette.field,
+          radius: 12,
+          keyboardType: isNumber ? const TextInputType.numberWithOptions(decimal: true, signed: true) : null,
+          inputFormatters: isNumber ? decimal : null,
+          style: isNumber ? context.text.mono(15) : context.text.sans(15),
+        ),
+      ],
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 12,
@@ -52,7 +57,7 @@ class KeyResultDraftForm extends StatelessWidget {
           label: AppLocale.keyResultNameLabel.getString(context),
           hint: AppLocale.keyResultNameHint.getString(context),
           onChanged: (v) => cubit.draftChanged(draft.copyWith(title: v)),
-          fill: AppColors.field,
+          fill: context.palette.field,
           radius: 14,
         ),
         SegmentedPill<KeyResultType>(
@@ -68,24 +73,52 @@ class KeyResultDraftForm extends StatelessWidget {
           Row(
             spacing: 8,
             children: [
-              Expanded(child: numberField(AppLocale.startField, AppLocale.startFieldLabel, draft.start, null, (v) => cubit.draftChanged(draft.copyWith(start: v)))),
-              Expanded(child: numberField(AppLocale.targetField, AppLocale.targetFieldLabel, draft.target, AppLocale.targetHint, (v) => cubit.draftChanged(draft.copyWith(target: v)))),
-              Expanded(child: numberField(AppLocale.unitField, AppLocale.unitField, draft.unit, AppLocale.unitHint, (v) => cubit.draftChanged(draft.copyWith(unit: v)), isNumber: false)),
+              Expanded(
+                child: numberField(
+                  AppLocale.startField,
+                  AppLocale.startFieldLabel,
+                  draft.start,
+                  null,
+                  (v) => cubit.draftChanged(draft.copyWith(start: v)),
+                ),
+              ),
+              Expanded(
+                child: numberField(
+                  AppLocale.targetField,
+                  AppLocale.targetFieldLabel,
+                  draft.target,
+                  AppLocale.targetHint,
+                  (v) => cubit.draftChanged(draft.copyWith(target: v)),
+                ),
+              ),
+              Expanded(
+                child: numberField(
+                  AppLocale.unitField,
+                  AppLocale.unitField,
+                  draft.unit,
+                  AppLocale.unitHint,
+                  (v) => cubit.draftChanged(draft.copyWith(unit: v)),
+                  isNumber: false,
+                ),
+              ),
             ],
           ),
         if (draft.type == KeyResultType.percent)
-          Text(AppLocale.percentHelp.getString(context), style: AppText.sans(14, height: 1.4, color: AppColors.muted)),
+          Text(
+            AppLocale.percentHelp.getString(context),
+            style: context.text.sans(14, height: 1.4, color: context.palette.muted),
+          ),
         if (draft.type == KeyResultType.milestones) ...[
           for (final (i, title) in draft.milestones.indexed)
             Row(
               spacing: 10,
               children: [
-                SizedBox(width: 18, child: Text('${i + 1}', style: AppText.monoSmall)),
-                Expanded(child: Text(title, style: AppText.body)),
+                SizedBox(width: 18, child: Text('${i + 1}', style: context.text.monoSmall)),
+                Expanded(child: Text(title, style: context.text.body)),
                 IconButton(
                   tooltip: context.formatString(AppLocale.deleteMilestone, [title]),
                   onPressed: () => cubit.removeDraftMilestone(i),
-                  icon: const Icon(Symbols.close_rounded, size: 18, color: AppColors.muted),
+                  icon: Icon(Symbols.close_rounded, size: 18, color: context.palette.muted),
                 ),
               ],
             ),
@@ -99,9 +132,9 @@ class KeyResultDraftForm extends StatelessWidget {
                   hint: AppLocale.addMilestoneHint.getString(context),
                   onChanged: (v) => cubit.draftChanged(draft.copyWith(milestoneInput: v)),
                   onSubmitted: (_) => cubit.addDraftMilestone(),
-                  fill: AppColors.field,
+                  fill: context.palette.field,
                   radius: 12,
-                  style: AppText.sans(15),
+                  style: context.text.sans(15),
                 ),
               ),
               IconButton(
@@ -109,10 +142,10 @@ class KeyResultDraftForm extends StatelessWidget {
                 onPressed: cubit.addDraftMilestone,
                 style: IconButton.styleFrom(
                   fixedSize: const Size.square(46),
-                  backgroundColor: AppColors.ink,
+                  backgroundColor: context.palette.inverse,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                icon: const Icon(Symbols.add_rounded, color: AppColors.onAccent),
+                icon: Icon(Symbols.add_rounded, color: context.palette.onInverse),
               ),
             ],
           ),

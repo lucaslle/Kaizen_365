@@ -6,10 +6,10 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/localization/formatters.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_text_field.dart';
 import '../cubit/key_result_update_cubit.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import 'milestone_row.dart';
 
 String _plain(double v) => v == v.roundToDouble() ? v.round().toString() : v.toString();
@@ -42,10 +42,12 @@ class NumericEditor extends StatelessWidget {
                 hasBorder: false,
                 fill: Colors.transparent,
                 verticalPadding: 0,
-                style: AppText.mono(44, weight: 600, height: 1.1, tracking: -0.04),
+                style: context.text.mono(44, weight: 600, height: 1.1, tracking: -0.04),
               ),
-              Text(context.formatString(AppLocale.targetText, [k.unit, Formatters.number(k.target)]).trim(),
-                  style: AppText.small),
+              Text(
+                context.formatString(AppLocale.targetText, [k.unit, Formatters.number(k.target)]).trim(),
+                style: context.text.small,
+              ),
             ],
           ),
         ),
@@ -65,17 +67,17 @@ class _RoundButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => IconButton(
-        tooltip: label.getString(context),
-        onPressed: onTap,
-        iconSize: 26,
-        style: IconButton.styleFrom(
-          fixedSize: const Size.square(56),
-          backgroundColor: isFilled ? AppColors.ink : Colors.transparent,
-          foregroundColor: isFilled ? AppColors.onAccent : AppColors.ink,
-          side: isFilled ? null : const BorderSide(color: AppColors.inputBorder, width: 1.5),
-        ),
-        icon: Icon(icon),
-      );
+    tooltip: label.getString(context),
+    onPressed: onTap,
+    iconSize: 26,
+    style: IconButton.styleFrom(
+      fixedSize: const Size.square(56),
+      backgroundColor: isFilled ? context.palette.inverse : Colors.transparent,
+      foregroundColor: isFilled ? context.palette.onInverse : context.palette.ink,
+      side: isFilled ? null : BorderSide(color: context.palette.inputBorder, width: 1.5),
+    ),
+    icon: Icon(icon),
+  );
 }
 
 class PercentEditor extends StatelessWidget {
@@ -85,19 +87,19 @@ class PercentEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        spacing: 12,
-        children: [
-          Text('${state.value.round()}%', style: AppText.mono(52, weight: 600, height: 1, tracking: -0.04)),
-          Slider(
-            value: state.value.clamp(0, 100),
-            max: 100,
-            divisions: 20,
-            semanticFormatterCallback: (v) => '${v.round()}%',
-            label: AppLocale.estimatedProgress.getString(context),
-            onChanged: context.read<KeyResultUpdateCubit>().percentChanged,
-          ),
-        ],
-      );
+    spacing: 12,
+    children: [
+      Text('${state.value.round()}%', style: context.text.mono(52, weight: 600, height: 1, tracking: -0.04)),
+      Slider(
+        value: state.value.clamp(0, 100),
+        max: 100,
+        divisions: 20,
+        semanticFormatterCallback: (v) => '${v.round()}%',
+        label: AppLocale.estimatedProgress.getString(context),
+        onChanged: context.read<KeyResultUpdateCubit>().percentChanged,
+      ),
+    ],
+  );
 }
 
 class MilestonesEditor extends StatelessWidget {
@@ -124,9 +126,9 @@ class MilestonesEditor extends StatelessWidget {
                 hint: AppLocale.newMilestone.getString(context),
                 onChanged: cubit.newMilestoneChanged,
                 onSubmitted: (_) => cubit.addMilestone(),
-                fill: AppColors.field,
+                fill: context.palette.field,
                 radius: 14,
-                style: AppText.sans(15),
+                style: context.text.sans(15),
               ),
             ),
             IconButton(
@@ -134,10 +136,10 @@ class MilestonesEditor extends StatelessWidget {
               onPressed: cubit.addMilestone,
               style: IconButton.styleFrom(
                 fixedSize: const Size.square(48),
-                backgroundColor: AppColors.sunken,
+                backgroundColor: context.palette.sunken,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
-              icon: const Icon(Symbols.add_rounded, color: AppColors.ink),
+              icon: Icon(Symbols.add_rounded, color: context.palette.ink),
             ),
           ],
         ),

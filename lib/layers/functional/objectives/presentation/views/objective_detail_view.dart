@@ -4,7 +4,6 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../technical/localization/app_locale.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_button.dart';
 import '../../domain/entities/objective.dart';
@@ -17,6 +16,7 @@ import '../widgets/domain_label.dart';
 import '../widgets/key_result_card.dart';
 import '../widgets/progress_hero_card.dart';
 import 'checkin_sheet.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import 'key_result_update_sheet.dart';
 
 class ObjectiveDetailView extends StatelessWidget {
@@ -26,29 +26,29 @@ class ObjectiveDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.background,
-          surfaceTintColor: Colors.transparent,
-          centerTitle: true,
-          leading: IconButton(
-            tooltip: AppLocale.back.getString(context),
-            icon: const Icon(Symbols.arrow_back_rounded, color: AppColors.ink),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: BlocSelector<ObjectivesCubit, ObjectivesState, int>(
-            selector: (state) => state.now.year,
-            builder: (context, year) =>
-                Text(context.formatString(AppLocale.detailOverline, [year]).toUpperCase(), style: AppText.overline),
-          ),
-        ),
-        body: BlocBuilder<ObjectivesCubit, ObjectivesState>(
-          builder: (context, state) {
-            final objective = state.byId(objectiveId);
-            if (objective == null) return const SizedBox.shrink();
-            return _DetailContent(objective: objective, expected: expectedProgress(state.now));
-          },
-        ),
-      );
+    appBar: AppBar(
+      backgroundColor: context.palette.background,
+      surfaceTintColor: Colors.transparent,
+      centerTitle: true,
+      leading: IconButton(
+        tooltip: AppLocale.back.getString(context),
+        icon: Icon(Symbols.arrow_back_rounded, color: context.palette.ink),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      title: BlocSelector<ObjectivesCubit, ObjectivesState, int>(
+        selector: (state) => state.now.year,
+        builder: (context, year) =>
+            Text(context.formatString(AppLocale.detailOverline, [year]).toUpperCase(), style: context.text.overline),
+      ),
+    ),
+    body: BlocBuilder<ObjectivesCubit, ObjectivesState>(
+      builder: (context, state) {
+        final objective = state.byId(objectiveId);
+        if (objective == null) return const SizedBox.shrink();
+        return _DetailContent(objective: objective, expected: expectedProgress(state.now));
+      },
+    ),
+  );
 }
 
 class _DetailContent extends StatelessWidget {
@@ -67,10 +67,15 @@ class _DetailContent extends StatelessWidget {
       children: [
         DomainLabel(domain: objective.domain, tileSize: 36, fontSize: 15),
         const SizedBox(height: 10),
-        Text(objective.title, style: AppText.screenTitle),
+        Text(objective.title, style: context.text.screenTitle),
         if (objective.why.isNotEmpty) ...[
           const SizedBox(height: 10),
-          Text('« ${objective.why} »', style: AppText.sans(16, height: 1.45, color: AppColors.muted).copyWith(fontStyle: FontStyle.italic)),
+          Text(
+            '« ${objective.why} »',
+            style: context.text
+                .sans(16, height: 1.45, color: context.palette.muted)
+                .copyWith(fontStyle: FontStyle.italic),
+          ),
         ],
         const SizedBox(height: 20),
         ProgressHeroCard(objective: objective, expected: expected),
@@ -78,9 +83,11 @@ class _DetailContent extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(AppLocale.keyResultsSection.getString(context), style: AppText.sectionTitle),
-            Text(context.formatString(AppLocale.keyResultsDone, [doneCount, keyResults.length]),
-                style: AppText.mono(13, color: AppColors.muted)),
+            Text(AppLocale.keyResultsSection.getString(context), style: context.text.sectionTitle),
+            Text(
+              context.formatString(AppLocale.keyResultsDone, [doneCount, keyResults.length]),
+              style: context.text.mono(13, color: context.palette.muted),
+            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -97,7 +104,7 @@ class _DetailContent extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(AppLocale.checkinsSection.getString(context), style: AppText.sectionTitle),
+            Text(AppLocale.checkinsSection.getString(context), style: context.text.sectionTitle),
             AppButton(
               label: AppLocale.newCheckin.getString(context),
               onPressed: () => CheckinSheet.show(context, objective: objective),

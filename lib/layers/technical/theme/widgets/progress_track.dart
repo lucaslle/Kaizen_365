@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_colors.dart';
+import '../app_palette.dart';
 import 'motion.dart';
 
 class ProgressTrack extends StatelessWidget {
@@ -10,7 +10,7 @@ class ProgressTrack extends StatelessWidget {
     required this.color,
     this.height = 10,
     this.expected,
-    this.trackColor = AppColors.sunken,
+    this.trackColor,
     this.semanticsLabel,
   });
 
@@ -18,7 +18,7 @@ class ProgressTrack extends StatelessWidget {
   final Color color;
   final double height;
   final double? expected;
-  final Color trackColor;
+  final Color? trackColor;
   final String? semanticsLabel;
 
   @override
@@ -34,7 +34,11 @@ class ProgressTrack extends StatelessWidget {
           builder: (context, constraints) => Stack(
             clipBehavior: Clip.none,
             children: [
-              Positioned.fill(child: DecoratedBox(decoration: BoxDecoration(color: trackColor, borderRadius: radius))),
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: trackColor ?? context.palette.sunken, borderRadius: radius),
+                ),
+              ),
               AnimatedContainer(
                 duration: Motion.duration(context, Motion.progress),
                 curve: Motion.curve,
@@ -48,7 +52,7 @@ class ProgressTrack extends StatelessWidget {
                   bottom: -markerOverflow,
                   child: Container(
                     width: 2,
-                    decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(1)),
+                    decoration: BoxDecoration(color: context.palette.ink, borderRadius: BorderRadius.circular(1)),
                   ),
                 ),
             ],

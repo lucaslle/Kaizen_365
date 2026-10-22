@@ -31,7 +31,9 @@ class ObjectiveGatewayImpl implements ObjectiveGateway {
     );
     _cache = next;
     _changes.add(next);
-    _pendingWrite = _pendingWrite.catchError((Object _) {}).then((_) => _dataSource.write(next.map(ObjectiveDto.toJson).toList()));
+    _pendingWrite = _pendingWrite
+        .catchError((Object _) {})
+        .then((_) => _dataSource.write(next.map(ObjectiveDto.toJson).toList()));
     await _pendingWrite;
   }
 }

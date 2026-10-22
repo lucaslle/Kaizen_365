@@ -20,13 +20,13 @@ class Objective {
   final List<Checkin> checkins;
 
   Objective copyWith({List<KeyResult>? keyResults, List<Checkin>? checkins}) => Objective(
-        id: id,
-        title: title,
-        domain: domain,
-        why: why,
-        keyResults: keyResults ?? this.keyResults,
-        checkins: checkins ?? this.checkins,
-      );
+    id: id,
+    title: title,
+    domain: domain,
+    why: why,
+    keyResults: keyResults ?? this.keyResults,
+    checkins: checkins ?? this.checkins,
+  );
 
   Objective withCheckin(Checkin checkin) => copyWith(checkins: [checkin, ...checkins]);
 

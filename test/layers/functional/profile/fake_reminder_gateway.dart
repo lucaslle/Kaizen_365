@@ -1,4 +1,4 @@
-import 'package:kaizen365/layers/functional/onboarding/domain/gateways/reminder_gateway.dart';
+import 'package:kaizen365/layers/functional/profile/domain/gateways/reminder_gateway.dart';
 
 class FakeReminderGateway implements ReminderGateway {
   bool isPermissionGranted = true;

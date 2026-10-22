@@ -4,7 +4,6 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/localization/formatters.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_card.dart';
 import '../../../../technical/theme/widgets/status_pill.dart';
@@ -12,6 +11,7 @@ import '../../domain/entities/objective.dart';
 import '../../domain/entities/progress.dart';
 import '../styles/domain_style.dart';
 import '../styles/status_style.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import '../cubit/year_review_cubit.dart';
 
 class ObjectiveReviewList extends StatelessWidget {
@@ -32,7 +32,7 @@ class ObjectiveReviewList extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: i == 0 ? Colors.transparent : AppColors.border)),
+                border: Border(top: BorderSide(color: i == 0 ? Colors.transparent : context.palette.border)),
               ),
               child: _row(context, o, expected),
             ),
@@ -57,7 +57,7 @@ class ObjectiveReviewList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 6,
                 children: [
-                  Text(objective.title, style: AppText.sans(16, weight: 600, height: 1.2)),
+                  Text(objective.title, style: context.text.sans(16, weight: 600, height: 1.2)),
                   StatusPill(
                     icon: status.icon,
                     label: status.labelKey.getString(context),
@@ -68,8 +68,10 @@ class ObjectiveReviewList extends StatelessWidget {
                 ],
               ),
             ),
-            Text(Formatters.percent(progress),
-                style: AppText.mono(20, weight: 600, color: DomainStyle.of(objective.domain).color)),
+            Text(
+              Formatters.percent(progress),
+              style: context.text.mono(20, weight: 600, color: DomainStyle.of(objective.domain).color),
+            ),
           ],
         ),
         if (progress < 0.999)
@@ -77,15 +79,15 @@ class ObjectiveReviewList extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(context.formatString(AppLocale.carryOver, [now.year + 1]), style: AppText.sans(14)),
+                  child: Text(context.formatString(AppLocale.carryOver, [now.year + 1]), style: context.text.sans(14)),
                 ),
                 Switch(
                   value: carried.contains(objective.id),
                   onChanged: (_) => context.read<YearReviewCubit>().carryToggled(objective.id),
-                  activeTrackColor: AppColors.accent,
-                  inactiveTrackColor: AppColors.strongBorder,
-                  inactiveThumbColor: AppColors.surface,
-                  thumbColor: const WidgetStatePropertyAll(AppColors.surface),
+                  activeTrackColor: context.palette.accent,
+                  inactiveTrackColor: context.palette.strongBorder,
+                  inactiveThumbColor: context.palette.surface,
+                  thumbColor: WidgetStatePropertyAll(context.palette.surface),
                   trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
                 ),
               ],

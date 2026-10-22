@@ -14,9 +14,29 @@ class StatusStyle {
   final Color background;
 
   static StatusStyle of(ObjectiveStatus status) => switch (status) {
-        ObjectiveStatus.done => const StatusStyle(Symbols.verified_rounded, AppLocale.statusDone, AppColors.onAccent, AppColors.ink),
-        ObjectiveStatus.onTrack => const StatusStyle(Symbols.check_circle_rounded, AppLocale.statusOnTrack, AppColors.onTrackFg, AppColors.onTrackBg),
-        ObjectiveStatus.atRisk => const StatusStyle(Symbols.warning_rounded, AppLocale.statusAtRisk, AppColors.atRiskFg, AppColors.atRiskBg),
-        ObjectiveStatus.late => const StatusStyle(Symbols.schedule_rounded, AppLocale.statusLate, AppColors.lateFg, AppColors.lateBg),
-      };
+    ObjectiveStatus.done => const StatusStyle(
+      Symbols.verified_rounded,
+      AppLocale.statusDone,
+      AppColors.brandCream,
+      AppColors.brandInk,
+    ),
+    ObjectiveStatus.onTrack => const StatusStyle(
+      Symbols.check_circle_rounded,
+      AppLocale.statusOnTrack,
+      AppColors.onTrackFg,
+      AppColors.onTrackBg,
+    ),
+    ObjectiveStatus.atRisk => const StatusStyle(
+      Symbols.warning_rounded,
+      AppLocale.statusAtRisk,
+      AppColors.atRiskFg,
+      AppColors.atRiskBg,
+    ),
+    ObjectiveStatus.late => const StatusStyle(
+      Symbols.schedule_rounded,
+      AppLocale.statusLate,
+      AppColors.lateFg,
+      AppColors.lateBg,
+    ),
+  };
 }

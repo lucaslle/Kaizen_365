@@ -3,7 +3,6 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/localization/formatters.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/progress_track.dart';
 import '../../domain/entities/objective.dart';
@@ -12,6 +11,7 @@ import '../styles/domain_style.dart';
 import '../styles/objective_texts.dart';
 import '../styles/status_style.dart';
 import 'domain_label.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import 'objective_status_pill.dart';
 
 class ObjectiveCard extends StatelessWidget {
@@ -36,10 +36,10 @@ class ObjectiveCard extends StatelessWidget {
       ]),
       excludeSemantics: true,
       child: Material(
-        color: AppColors.surface,
+        color: context.palette.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(22),
-          side: const BorderSide(color: AppColors.border),
+          side: BorderSide(color: context.palette.border),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -57,15 +57,15 @@ class ObjectiveCard extends StatelessWidget {
                     ObjectiveStatusPill(status: status),
                   ],
                 ),
-                Text(objective.title, style: AppText.cardTitle),
+                Text(objective.title, style: context.text.cardTitle),
                 ProgressTrack(value: progress, color: domain.color, expected: expected),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
                   children: [
-                    Text(context.keyResultCount(objective.keyResults.length), style: AppText.small),
-                    Text(Formatters.percent(progress), style: AppText.mono(18, weight: 600)),
+                    Text(context.keyResultCount(objective.keyResults.length), style: context.text.small),
+                    Text(Formatters.percent(progress), style: context.text.mono(18, weight: 600)),
                   ],
                 ),
               ],

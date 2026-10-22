@@ -17,13 +17,11 @@ double keyResultProgress(KeyResult k) {
   return raw.clamp(0.0, 1.0);
 }
 
-double objectiveProgress(Objective o) => o.keyResults.isEmpty
-    ? 0
-    : o.keyResults.map(keyResultProgress).reduce((a, b) => a + b) / o.keyResults.length;
+double objectiveProgress(Objective o) =>
+    o.keyResults.isEmpty ? 0 : o.keyResults.map(keyResultProgress).reduce((a, b) => a + b) / o.keyResults.length;
 
-double yearScore(List<Objective> objectives) => objectives.isEmpty
-    ? 0
-    : objectives.map(objectiveProgress).reduce((a, b) => a + b) / objectives.length;
+double yearScore(List<Objective> objectives) =>
+    objectives.isEmpty ? 0 : objectives.map(objectiveProgress).reduce((a, b) => a + b) / objectives.length;
 
 ObjectiveStatus statusFor(double progress, double expected) {
   if (progress >= 0.999) return ObjectiveStatus.done;

@@ -2,13 +2,7 @@ import 'mood.dart';
 import 'progress_change.dart';
 
 class Checkin {
-  const Checkin({
-    required this.id,
-    required this.date,
-    this.mood,
-    this.text = '',
-    this.change,
-  });
+  const Checkin({required this.id, required this.date, this.mood, this.text = '', this.change});
 
   final String id;
   final DateTime date;

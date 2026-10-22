@@ -46,12 +46,12 @@ class KeyResultCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 3,
                   children: [
-                    Text(context.typeLabel(keyResult.type).toUpperCase(), style: AppText.overline),
-                    Text(keyResult.title, style: AppText.sans(17, weight: 600, height: 1.2)),
+                    Text(context.typeLabel(keyResult.type).toUpperCase(), style: context.text.overline),
+                    Text(keyResult.title, style: context.text.sans(17, weight: 600, height: 1.2)),
                   ],
                 ),
               ),
-              Text(Formatters.percent(progress), style: AppText.mono(16, weight: 600)),
+              Text(Formatters.percent(progress), style: context.text.mono(16, weight: 600)),
             ],
           ),
           ProgressTrack(value: progress, color: color, height: 8, semanticsLabel: keyResult.title),
@@ -65,7 +65,7 @@ class KeyResultCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(child: Text(context.keyResultValue(keyResult), style: AppText.small)),
+              Flexible(child: Text(context.keyResultValue(keyResult), style: context.text.small)),
               AppButton(
                 label: AppLocale.update.getString(context),
                 onPressed: onUpdate,

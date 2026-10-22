@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_colors.dart';
+import '../app_palette.dart';
 import '../app_text.dart';
 
 enum AppButtonVariant { accent, dark, outline, soft, light }
@@ -28,11 +28,11 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (background, foreground) = switch (variant) {
-      AppButtonVariant.accent => (AppColors.accent, AppColors.onAccent),
-      AppButtonVariant.dark => (AppColors.ink, AppColors.onAccent),
-      AppButtonVariant.outline => (Colors.transparent, AppColors.ink),
-      AppButtonVariant.soft => (AppColors.sunken, AppColors.ink),
-      AppButtonVariant.light => (AppColors.accentLight, AppColors.ink),
+      AppButtonVariant.accent => (context.palette.accent, context.palette.onAccent),
+      AppButtonVariant.dark => (context.palette.inverse, context.palette.onInverse),
+      AppButtonVariant.outline => (Colors.transparent, context.palette.ink),
+      AppButtonVariant.soft => (context.palette.sunken, context.palette.ink),
+      AppButtonVariant.light => (context.palette.accentLight, context.palette.ink),
     };
     final isEnabled = onPressed != null;
     return Opacity(
@@ -41,7 +41,7 @@ class AppButton extends StatelessWidget {
         color: background,
         shape: StadiumBorder(
           side: variant == AppButtonVariant.outline
-              ? const BorderSide(color: AppColors.inputBorder, width: 1.5)
+              ? BorderSide(color: context.palette.inputBorder, width: 1.5)
               : BorderSide.none,
         ),
         clipBehavior: Clip.antiAlias,
@@ -55,7 +55,7 @@ class AppButton extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (icon != null) ...[Icon(icon, size: fontSize + 4, color: foreground), const SizedBox(width: 6)],
-                Text(label, style: AppText.sans(fontSize, weight: 600, color: foreground)),
+                Text(label, style: context.text.sans(fontSize, weight: 600, color: foreground)),
               ],
             ),
           ),

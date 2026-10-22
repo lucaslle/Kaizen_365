@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../domain/entities/life_domain.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import '../styles/domain_style.dart';
 
 class DomainLabel extends StatelessWidget {
@@ -26,7 +26,10 @@ class DomainLabel extends StatelessWidget {
           decoration: BoxDecoration(color: style.tint, borderRadius: BorderRadius.circular(tileSize * 0.31)),
           child: Icon(style.icon, size: tileSize * 0.6, fill: 1, color: style.color),
         ),
-        Text(style.labelKey.getString(context), style: AppText.sans(fontSize, weight: 500, color: AppColors.ink2)),
+        Text(
+          style.labelKey.getString(context),
+          style: context.text.sans(fontSize, weight: 500, color: context.palette.ink2),
+        ),
       ],
     );
   }

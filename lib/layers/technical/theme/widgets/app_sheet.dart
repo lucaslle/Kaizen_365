@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_colors.dart';
+import '../app_palette.dart';
 import 'motion.dart';
 
 Future<T?> showAppSheet<T>(BuildContext context, {required String label, required WidgetBuilder builder}) =>
@@ -8,8 +8,8 @@ Future<T?> showAppSheet<T>(BuildContext context, {required String label, require
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      barrierColor: AppColors.scrim,
-      backgroundColor: AppColors.surface,
+      barrierColor: context.palette.scrim,
+      backgroundColor: context.palette.surface,
       sheetAnimationStyle: MediaQuery.disableAnimationsOf(context)
           ? AnimationStyle.noAnimation
           : const AnimationStyle(duration: Motion.sheet, curve: Motion.curve),
@@ -31,7 +31,10 @@ Future<T?> showAppSheet<T>(BuildContext context, {required String label, require
                     width: 36,
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 18),
-                    decoration: BoxDecoration(color: AppColors.inputBorder, borderRadius: BorderRadius.circular(2)),
+                    decoration: BoxDecoration(
+                      color: context.palette.inputBorder,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
                 builder(context),

@@ -11,11 +11,11 @@ class KaizenLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(size * 0.24),
-          child: CustomPaint(size: Size.square(size), painter: const _KaizenLogoPainter()),
-        ),
-      );
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(size * 0.24),
+      child: CustomPaint(size: Size.square(size), painter: const _KaizenLogoPainter()),
+    ),
+  );
 }
 
 class _KaizenLogoPainter extends CustomPainter {
@@ -26,13 +26,13 @@ class _KaizenLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.scale(size.width / 100);
-    canvas.drawRect(const Rect.fromLTWH(0, 0, 100, 100), Paint()..color = AppColors.ink);
+    canvas.drawRect(const Rect.fromLTWH(0, 0, 100, 100), Paint()..color = AppColors.brandInk);
     for (var month = 0; month < 12; month++) {
       final color = month < _pastMonths
-          ? AppColors.onAccent
+          ? AppColors.brandCream
           : month == _pastMonths
-              ? AppColors.accentLight
-              : AppColors.ink2;
+          ? AppColors.brandCoral
+          : AppColors.brandInk2;
       canvas
         ..save()
         ..translate(50, 50)
@@ -48,18 +48,18 @@ class _KaizenLogoPainter extends CustomPainter {
       ..lineTo(62, 43)
       ..lineTo(74, 68)
       ..close();
-    canvas.drawPath(mountain, Paint()..color = AppColors.ink2);
+    canvas.drawPath(mountain, Paint()..color = AppColors.brandInk2);
     final trail = Path()
       ..moveTo(30, 64)
       ..quadraticBezierTo(38, 60, 40, 54)
       ..quadraticBezierTo(42, 48, 46, 40);
-    final dotPaint = Paint()..color = AppColors.onAccent;
+    final dotPaint = Paint()..color = AppColors.brandCream;
     for (final metric in trail.computeMetrics()) {
       for (var d = 0.25; d < metric.length; d += 6.5) {
         canvas.drawCircle(metric.getTangentForOffset(d)!.position, 1.6, dotPaint);
       }
     }
-    canvas.drawCircle(const Offset(46, 38), 4, Paint()..color = AppColors.accentLight);
+    canvas.drawCircle(const Offset(46, 38), 4, Paint()..color = AppColors.brandCoral);
   }
 
   @override

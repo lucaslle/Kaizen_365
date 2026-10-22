@@ -13,13 +13,14 @@ import '../layers/functional/objectives/domain/use_cases/save_year_review_use_ca
 import '../layers/functional/objectives/domain/use_cases/toggle_milestone_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/update_key_result_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/watch_objectives_use_case.dart';
-import '../layers/functional/onboarding/data/gateways/reminder_gateway_impl.dart';
-import '../layers/functional/onboarding/data/gateways/settings_gateway_impl.dart';
-import '../layers/functional/onboarding/domain/gateways/reminder_gateway.dart';
-import '../layers/functional/onboarding/domain/gateways/settings_gateway.dart';
-import '../layers/functional/onboarding/domain/use_cases/complete_onboarding_use_case.dart';
-import '../layers/functional/onboarding/domain/use_cases/get_settings_use_case.dart';
-import '../layers/functional/onboarding/domain/use_cases/schedule_checkin_reminders_use_case.dart';
+import '../layers/functional/profile/data/gateways/reminder_gateway_impl.dart';
+import '../layers/functional/profile/data/gateways/settings_gateway_impl.dart';
+import '../layers/functional/profile/domain/gateways/reminder_gateway.dart';
+import '../layers/functional/profile/domain/gateways/settings_gateway.dart';
+import '../layers/functional/profile/domain/use_cases/complete_onboarding_use_case.dart';
+import '../layers/functional/profile/domain/use_cases/get_settings_use_case.dart';
+import '../layers/functional/profile/domain/use_cases/schedule_checkin_reminders_use_case.dart';
+import '../layers/functional/profile/domain/use_cases/update_settings_use_case.dart';
 import '../layers/technical/clock/clock.dart';
 import '../layers/technical/localization/app_locale.dart';
 import '../layers/technical/notifications/local_notifications.dart';
@@ -54,5 +55,6 @@ Future<void> initializeDependencies() async {
     ..registerLazySingleton(() => SaveYearReviewUseCase(getIt()))
     ..registerLazySingleton(() => GetSettingsUseCase(getIt()))
     ..registerLazySingleton(() => ScheduleCheckinRemindersUseCase(getIt(), getIt()))
-    ..registerLazySingleton(() => CompleteOnboardingUseCase(getIt(), getIt(), getIt()));
+    ..registerLazySingleton(() => CompleteOnboardingUseCase(getIt(), getIt(), getIt()))
+    ..registerLazySingleton(() => UpdateSettingsUseCase(getIt(), getIt(), getIt()));
 }

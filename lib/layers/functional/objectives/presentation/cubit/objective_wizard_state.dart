@@ -23,7 +23,9 @@ class KeyResultDraft {
   double get startValue => _parse(start) ?? 0;
   double? get targetValue => _parse(target);
 
-  bool get isValid => title.trim().isNotEmpty && switch (type) {
+  bool get isValid =>
+      title.trim().isNotEmpty &&
+      switch (type) {
         KeyResultType.numeric => targetValue != null && targetValue != startValue,
         KeyResultType.milestones => milestones.isNotEmpty,
         KeyResultType.percent => true,
@@ -39,16 +41,15 @@ class KeyResultDraft {
     String? unit,
     List<String>? milestones,
     String? milestoneInput,
-  }) =>
-      KeyResultDraft(
-        title: title ?? this.title,
-        type: type ?? this.type,
-        start: start ?? this.start,
-        target: target ?? this.target,
-        unit: unit ?? this.unit,
-        milestones: milestones ?? this.milestones,
-        milestoneInput: milestoneInput ?? this.milestoneInput,
-      );
+  }) => KeyResultDraft(
+    title: title ?? this.title,
+    type: type ?? this.type,
+    start: start ?? this.start,
+    target: target ?? this.target,
+    unit: unit ?? this.unit,
+    milestones: milestones ?? this.milestones,
+    milestoneInput: milestoneInput ?? this.milestoneInput,
+  );
 }
 
 enum WizardStep { what, why, how, recap }
@@ -81,10 +82,10 @@ class ObjectiveWizardState {
   final bool hasFailed;
 
   bool get canGoNext => switch (step) {
-        WizardStep.what => title.trim().length > 2,
-        WizardStep.how => keyResults.isNotEmpty,
-        _ => true,
-      };
+    WizardStep.what => title.trim().length > 2,
+    WizardStep.how => keyResults.isNotEmpty,
+    _ => true,
+  };
 
   ObjectiveWizardState copyWith({
     WizardStep? step,
@@ -98,18 +99,17 @@ class ObjectiveWizardState {
     int? milestoneRevision,
     String? createdObjectiveId,
     bool? hasFailed,
-  }) =>
-      ObjectiveWizardState(
-        step: step ?? this.step,
-        title: title ?? this.title,
-        titleRevision: titleRevision ?? this.titleRevision,
-        domain: domain ?? this.domain,
-        why: why ?? this.why,
-        keyResults: keyResults ?? this.keyResults,
-        draft: draft ?? this.draft,
-        draftRevision: draftRevision ?? this.draftRevision,
-        milestoneRevision: milestoneRevision ?? this.milestoneRevision,
-        createdObjectiveId: createdObjectiveId ?? this.createdObjectiveId,
-        hasFailed: hasFailed ?? false,
-      );
+  }) => ObjectiveWizardState(
+    step: step ?? this.step,
+    title: title ?? this.title,
+    titleRevision: titleRevision ?? this.titleRevision,
+    domain: domain ?? this.domain,
+    why: why ?? this.why,
+    keyResults: keyResults ?? this.keyResults,
+    draft: draft ?? this.draft,
+    draftRevision: draftRevision ?? this.draftRevision,
+    milestoneRevision: milestoneRevision ?? this.milestoneRevision,
+    createdObjectiveId: createdObjectiveId ?? this.createdObjectiveId,
+    hasFailed: hasFailed ?? false,
+  );
 }

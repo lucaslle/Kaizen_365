@@ -18,11 +18,13 @@ class ToggleMilestoneUseCase {
     var updated = objective.replacingKeyResult(keyResult.copyWith(milestones: milestones));
     if (!milestone.isDone) {
       final now = _clock();
-      updated = updated.withCheckin(Checkin(
-        id: 'c${now.microsecondsSinceEpoch}',
-        date: now,
-        change: ProgressChange(kind: ProgressChangeKind.milestoneDone, subject: milestone.title),
-      ));
+      updated = updated.withCheckin(
+        Checkin(
+          id: 'c${now.microsecondsSinceEpoch}',
+          date: now,
+          change: ProgressChange(kind: ProgressChangeKind.milestoneDone, subject: milestone.title),
+        ),
+      );
     }
     await _gateway.save(updated);
     return !milestone.isDone;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../technical/localization/formatters.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../domain/entities/checkin.dart';
 import '../styles/mood_style.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import 'checkin_content.dart';
 
 class CheckinTimelineItem extends StatelessWidget {
@@ -30,11 +30,11 @@ class CheckinTimelineItem extends StatelessWidget {
                   height: 10,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: mood == null ? AppColors.dot : MoodStyle.of(mood).color,
+                    color: mood == null ? context.palette.dot : MoodStyle.of(mood).color,
                   ),
                 ),
                 const SizedBox(height: 4),
-                Expanded(child: Container(width: 2, color: AppColors.border)),
+                Expanded(child: Container(width: 2, color: context.palette.border)),
               ],
             ),
           ),
@@ -48,11 +48,11 @@ class CheckinTimelineItem extends StatelessWidget {
                   Row(
                     spacing: 10,
                     children: [
-                      Text(Formatters.shortDate(checkin.date), style: AppText.monoSmall),
+                      Text(Formatters.shortDate(checkin.date), style: context.text.monoSmall),
                       CheckinMood(checkin: checkin),
                     ],
                   ),
-                  CheckinBody(checkin: checkin, chipColor: AppColors.sunken),
+                  CheckinBody(checkin: checkin, chipColor: context.palette.sunken),
                 ],
               ),
             ),

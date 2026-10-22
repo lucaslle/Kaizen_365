@@ -15,13 +15,8 @@ import '../../domain/use_cases/watch_objectives_use_case.dart';
 import 'objectives_state.dart';
 
 class ObjectivesCubit extends Cubit<ObjectivesState> {
-  ObjectivesCubit(
-    this._watchObjectives,
-    this._toggleMilestone,
-    this._updateKeyResult,
-    this._addCheckin,
-    this._clock,
-  ) : super(ObjectivesState(now: _clock()));
+  ObjectivesCubit(this._watchObjectives, this._toggleMilestone, this._updateKeyResult, this._addCheckin, this._clock)
+    : super(ObjectivesState(now: _clock()));
 
   final WatchObjectivesUseCase _watchObjectives;
   final ToggleMilestoneUseCase _toggleMilestone;
@@ -41,11 +36,10 @@ class ObjectivesCubit extends Cubit<ObjectivesState> {
     );
   }
 
-  Future<void> toggleMilestone(Objective objective, KeyResult keyResult, int index) =>
-      _guard(() async {
-        final isDone = await _toggleMilestone(objective, keyResult, index);
-        if (isDone) emit(state.withNotice(ObjectivesNotice.milestoneDone));
-      });
+  Future<void> toggleMilestone(Objective objective, KeyResult keyResult, int index) => _guard(() async {
+    final isDone = await _toggleMilestone(objective, keyResult, index);
+    if (isDone) emit(state.withNotice(ObjectivesNotice.milestoneDone));
+  });
 
   Future<void> updateKeyResult(
     Objective objective,
@@ -53,16 +47,15 @@ class ObjectivesCubit extends Cubit<ObjectivesState> {
     double value = 0,
     List<Milestone> milestones = const [],
     String note = '',
-  }) =>
-      _guard(() async {
-        final hasCheckin = await _updateKeyResult(objective, keyResult, value: value, milestones: milestones, note: note);
-        if (hasCheckin) emit(state.withNotice(ObjectivesNotice.progressSaved));
-      });
+  }) => _guard(() async {
+    final hasCheckin = await _updateKeyResult(objective, keyResult, value: value, milestones: milestones, note: note);
+    if (hasCheckin) emit(state.withNotice(ObjectivesNotice.progressSaved));
+  });
 
   Future<void> addCheckin(Objective objective, {required Mood? mood, required String text}) => _guard(() async {
-        await _addCheckin(objective, mood: mood, text: text);
-        emit(state.withNotice(ObjectivesNotice.checkinPublished));
-      });
+    await _addCheckin(objective, mood: mood, text: text);
+    emit(state.withNotice(ObjectivesNotice.checkinPublished));
+  });
 
   void notifyCreated() => emit(state.withNotice(ObjectivesNotice.objectiveCreated));
 

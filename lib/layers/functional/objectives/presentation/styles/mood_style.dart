@@ -13,8 +13,8 @@ class MoodStyle {
   final Color color;
 
   static MoodStyle of(Mood mood) => switch (mood) {
-        Mood.up => const MoodStyle(Symbols.sentiment_satisfied_rounded, AppLocale.moodUp, AppColors.moodUp),
-        Mood.mid => const MoodStyle(Symbols.sentiment_neutral_rounded, AppLocale.moodMid, AppColors.moodMid),
-        Mood.down => const MoodStyle(Symbols.sentiment_dissatisfied_rounded, AppLocale.moodDown, AppColors.moodDown),
-      };
+    Mood.up => const MoodStyle(Symbols.sentiment_satisfied_rounded, AppLocale.moodUp, AppColors.moodUp),
+    Mood.mid => const MoodStyle(Symbols.sentiment_neutral_rounded, AppLocale.moodMid, AppColors.moodMid),
+    Mood.down => const MoodStyle(Symbols.sentiment_dissatisfied_rounded, AppLocale.moodDown, AppColors.moodDown),
+  };
 }

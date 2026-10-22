@@ -7,11 +7,12 @@ import '../layers/functional/objectives/presentation/views/home_view.dart';
 import '../layers/functional/objectives/presentation/views/journal_view.dart';
 import '../layers/functional/objectives/presentation/views/objective_wizard_view.dart';
 import '../layers/functional/objectives/presentation/views/year_review_view.dart';
-import '../layers/functional/onboarding/domain/entities/user_settings.dart';
-import '../layers/functional/onboarding/presentation/rhythm_texts.dart';
+import '../layers/functional/profile/domain/entities/user_settings.dart';
+import '../layers/functional/profile/presentation/rhythm_texts.dart';
+import '../layers/functional/profile/presentation/views/profile_view.dart';
 import '../layers/technical/localization/app_locale.dart';
-import '../layers/technical/theme/app_colors.dart';
 import '../layers/technical/theme/app_text.dart';
+import '../layers/technical/theme/app_palette.dart';
 import 'tab_cubit.dart';
 
 class AppShell extends StatelessWidget {
@@ -34,7 +35,11 @@ class AppShell extends StatelessWidget {
           child: IndexedStack(
             index: tab.index,
             children: [
-              HomeView(userName: settings.name, onCreateObjective: openWizard),
+              HomeView(
+                userName: settings.name,
+                onCreateObjective: openWizard,
+                onOpenProfile: () => ProfileView.open(context),
+              ),
               const JournalView(),
               YearReviewView(onPrepareNextYear: openWizard),
             ],
@@ -43,18 +48,18 @@ class AppShell extends StatelessWidget {
         bottomNavigationBar: NavigationBar(
           selectedIndex: tab.index,
           onDestinationSelected: (i) => context.read<TabCubit>().selected(AppTab.values[i]),
-          backgroundColor: AppColors.navBar,
-          indicatorColor: AppColors.navIndicator,
+          backgroundColor: context.palette.navBar,
+          indicatorColor: context.palette.navIndicator,
           surfaceTintColor: Colors.transparent,
           height: 80,
           labelTextStyle: WidgetStateProperty.resolveWith(
-            (states) => AppText.sans(12, weight: states.contains(WidgetState.selected) ? 700 : 500),
+            (states) => context.text.sans(12, weight: states.contains(WidgetState.selected) ? 700 : 500),
           ),
           destinations: [
             for (final (icon, label) in destinations)
               NavigationDestination(
-                icon: Icon(icon, color: AppColors.ink),
-                selectedIcon: Icon(icon, fill: 1, color: AppColors.ink),
+                icon: Icon(icon, color: context.palette.ink),
+                selectedIcon: Icon(icon, fill: 1, color: context.palette.ink),
                 label: label.getString(context),
               ),
           ],

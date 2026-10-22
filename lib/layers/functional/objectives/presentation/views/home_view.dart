@@ -4,7 +4,6 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../technical/localization/app_locale.dart';
-import '../../../../technical/theme/app_colors.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/kaizen_logo.dart';
 import '../../domain/entities/progress.dart';
@@ -15,40 +14,56 @@ import '../widgets/objective_card.dart';
 import '../widgets/objectives_status_view.dart';
 import '../widgets/status_summary.dart';
 import '../widgets/year_card.dart';
+import '../../../../../layers/technical/theme/app_palette.dart';
 import 'objective_detail_view.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key, required this.userName, required this.onCreateObjective});
+  const HomeView({super.key, required this.userName, required this.onCreateObjective, required this.onOpenProfile});
 
   final String userName;
   final VoidCallback onCreateObjective;
+  final VoidCallback onOpenProfile;
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.transparent,
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: onCreateObjective,
-          backgroundColor: AppColors.accent,
-          foregroundColor: AppColors.onAccent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-          icon: const Icon(Symbols.add_rounded, size: 24),
-          label: Text(AppLocale.newObjectiveFab.getString(context), style: AppText.sans(16, weight: 600, color: AppColors.onAccent)),
+    backgroundColor: Colors.transparent,
+    floatingActionButton: FloatingActionButton.extended(
+      onPressed: onCreateObjective,
+      backgroundColor: context.palette.accent,
+      foregroundColor: context.palette.onAccent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      icon: const Icon(Symbols.add_rounded, size: 24),
+      label: Text(
+        AppLocale.newObjectiveFab.getString(context),
+        style: context.text.sans(16, weight: 600, color: context.palette.onAccent),
+      ),
+    ),
+    body: BlocBuilder<ObjectivesCubit, ObjectivesState>(
+      builder: (context, state) => ObjectivesStatusView(
+        status: state.status,
+        builder: () => _HomeContent(
+          state: state,
+          userName: userName,
+          onCreateObjective: onCreateObjective,
+          onOpenProfile: onOpenProfile,
         ),
-        body: BlocBuilder<ObjectivesCubit, ObjectivesState>(
-          builder: (context, state) => ObjectivesStatusView(
-            status: state.status,
-            builder: () => _HomeContent(state: state, userName: userName, onCreateObjective: onCreateObjective),
-          ),
-        ),
-      );
+      ),
+    ),
+  );
 }
 
 class _HomeContent extends StatelessWidget {
-  const _HomeContent({required this.state, required this.userName, required this.onCreateObjective});
+  const _HomeContent({
+    required this.state,
+    required this.userName,
+    required this.onCreateObjective,
+    required this.onOpenProfile,
+  });
 
   final ObjectivesState state;
   final String userName;
   final VoidCallback onCreateObjective;
+  final VoidCallback onOpenProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -70,22 +85,30 @@ class _HomeContent extends StatelessWidget {
                     children: [
                       const KaizenLogo(size: 24),
                       Text(
-                        context.formatString(
-                            AppLocale.greeting, [name.isEmpty ? AppLocale.greetingFallbackName.getString(context) : name]),
-                        style: AppText.bodyMuted,
+                        context.formatString(AppLocale.greeting, [
+                          name.isEmpty ? AppLocale.greetingFallbackName.getString(context) : name,
+                        ]),
+                        style: context.text.bodyMuted,
                       ),
                     ],
                   ),
-                  Text(context.formatString(AppLocale.homeTitle, [state.now.year]), style: AppText.screenTitle),
+                  Text(context.formatString(AppLocale.homeTitle, [state.now.year]), style: context.text.screenTitle),
                 ],
               ),
             ),
-            ExcludeSemantics(
-              child: CircleAvatar(
-                radius: 22,
-                backgroundColor: AppColors.ink,
-                child: Text(name.isEmpty ? '?' : name.characters.first.toUpperCase(),
-                    style: AppText.sans(17, weight: 600, color: AppColors.onAccent)),
+            Tooltip(
+              message: AppLocale.openProfile.getString(context),
+              child: InkResponse(
+                onTap: onOpenProfile,
+                radius: 26,
+                child: CircleAvatar(
+                  radius: 22,
+                  backgroundColor: context.palette.inverse,
+                  child: Text(
+                    name.isEmpty ? '?' : name.characters.first.toUpperCase(),
+                    style: context.text.sans(17, weight: 600, color: context.palette.onInverse),
+                  ),
+                ),
               ),
             ),
           ],
@@ -101,8 +124,8 @@ class _HomeContent extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocale.objectivesSection.getString(context), style: AppText.sectionTitle),
-              Text('${objectives.length}', style: AppText.mono(13, color: AppColors.muted)),
+              Text(AppLocale.objectivesSection.getString(context), style: context.text.sectionTitle),
+              Text('${objectives.length}', style: context.text.mono(13, color: context.palette.muted)),
             ],
           ),
           const SizedBox(height: 18),
@@ -110,9 +133,9 @@ class _HomeContent extends StatelessWidget {
             ObjectiveCard(
               objective: objective,
               expected: expected,
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(builder: (_) => ObjectiveDetailView(objectiveId: objective.id)),
-              ),
+              onTap: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute<void>(builder: (_) => ObjectiveDetailView(objectiveId: objective.id))),
             ),
             const SizedBox(height: 12),
           ],
@@ -122,8 +145,8 @@ class _HomeContent extends StatelessWidget {
             child: Row(
               spacing: 8,
               children: [
-                Container(width: 2, height: 14, color: AppColors.ink),
-                Flexible(child: Text(AppLocale.expectedLegend.getString(context), style: AppText.caption)),
+                Container(width: 2, height: 14, color: context.palette.ink),
+                Flexible(child: Text(AppLocale.expectedLegend.getString(context), style: context.text.caption)),
               ],
             ),
           ),

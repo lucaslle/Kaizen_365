@@ -13,6 +13,7 @@ class SettingsGatewayImpl implements SettingsGateway {
     return UserSettings(
       name: _preferences.getString(PreferenceKey.userName) ?? '',
       rhythm: rhythm == null ? CheckinRhythm.weekly : CheckinRhythm.values.byName(rhythm),
+      themeName: _preferences.getString(PreferenceKey.themeName) ?? '',
       hasCompletedOnboarding: _preferences.getBool(PreferenceKey.hasCompletedOnboarding) ?? false,
     );
   }
@@ -21,6 +22,7 @@ class SettingsGatewayImpl implements SettingsGateway {
   Future<void> save(UserSettings settings) async {
     await _preferences.setString(PreferenceKey.userName, settings.name);
     await _preferences.setString(PreferenceKey.checkinRhythm, settings.rhythm.name);
+    await _preferences.setString(PreferenceKey.themeName, settings.themeName);
     await _preferences.setBool(PreferenceKey.hasCompletedOnboarding, settings.hasCompletedOnboarding);
   }
 }

@@ -4,6 +4,7 @@ enum PreferenceKey {
   userName,
   checkinRhythm,
   hasCompletedOnboarding,
+  themeName,
   isYearClosed,
   carriedObjectiveIds,
   reflectionProud,
@@ -16,9 +17,8 @@ class AppPreferences {
 
   final SharedPreferencesWithCache _prefs;
 
-  static Future<AppPreferences> create() async => AppPreferences(
-        await SharedPreferencesWithCache.create(cacheOptions: const SharedPreferencesWithCacheOptions()),
-      );
+  static Future<AppPreferences> create() async =>
+      AppPreferences(await SharedPreferencesWithCache.create(cacheOptions: const SharedPreferencesWithCacheOptions()));
 
   String? getString(PreferenceKey key) => _prefs.getString(key.name);
   bool? getBool(PreferenceKey key) => _prefs.getBool(key.name);
