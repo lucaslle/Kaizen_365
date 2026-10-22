@@ -35,6 +35,22 @@ class ObjectiveGatewayImpl implements ObjectiveGateway {
       if (o.id != objectiveId) o,
   ]);
 
+  @override
+  Future<void> reorder(List<String> orderedIds) async {
+    final current = await _objectives();
+    final byId = {for (final o in current) o.id: o};
+    final queue = [
+      for (final id in orderedIds)
+        if (byId.containsKey(id)) byId[id]!,
+    ];
+    final moved = {for (final o in queue) o.id};
+    var next = 0;
+    await _publish([for (final o in current) moved.contains(o.id) ? queue[next++] : o]);
+  }
+
+  @override
+  Future<void> replaceAll(List<Objective> objectives) => _publish(objectives);
+
   Future<void> _publish(List<Objective> objectives) async {
     final next = List<Objective>.unmodifiable(objectives);
     _cache = next;

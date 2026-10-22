@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_palette.dart';
+import 'dashed_border_painter.dart';
 
 class AppCard extends StatelessWidget {
   const AppCard({
@@ -23,14 +24,22 @@ class AppCard extends StatelessWidget {
   final bool isDashed;
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: padding,
-    decoration: BoxDecoration(
-      color: color ?? context.palette.surface,
-      borderRadius: BorderRadius.circular(radius),
-      border: hasBorder ? Border.all(color: borderColor ?? context.palette.border, width: isDashed ? 1.5 : 1) : null,
-    ),
-    child: child,
-  );
+  Widget build(BuildContext context) {
+    final lineColor = borderColor ?? context.palette.border;
+    final card = Container(
+      width: double.infinity,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: color ?? context.palette.surface,
+        borderRadius: BorderRadius.circular(radius),
+        border: hasBorder && !isDashed ? Border.all(color: lineColor) : null,
+      ),
+      child: child,
+    );
+    if (!hasBorder || !isDashed) return card;
+    return CustomPaint(
+      foregroundPainter: DashedBorderPainter(color: lineColor, radius: radius),
+      child: card,
+    );
+  }
 }

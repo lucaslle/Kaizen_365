@@ -13,6 +13,10 @@ class DomainStyle {
   final IconData icon;
   final String labelKey;
 
+  /// The domain color for text: lightened on dark themes so it keeps a readable contrast.
+  Color textColor(Brightness brightness) =>
+      brightness == Brightness.dark ? Color.lerp(color, const Color(0xFFFFFFFF), 0.45)! : color;
+
   static DomainStyle of(LifeDomain domain) => switch (domain) {
     LifeDomain.health => const DomainStyle(
       AppColors.health,

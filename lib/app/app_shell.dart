@@ -9,10 +9,13 @@ import '../layers/functional/objectives/presentation/views/objective_wizard_view
 import '../layers/functional/objectives/presentation/views/year_review_view.dart';
 import '../layers/functional/profile/domain/entities/user_settings.dart';
 import '../layers/functional/profile/presentation/rhythm_texts.dart';
+import '../layers/functional/objectives/presentation/widgets/backup_section.dart';
+import '../layers/functional/profile/presentation/cubit/settings_cubit.dart';
 import '../layers/functional/profile/presentation/views/profile_view.dart';
 import '../layers/technical/localization/app_locale.dart';
 import '../layers/technical/theme/app_text.dart';
 import '../layers/technical/theme/app_palette.dart';
+import 'reminder_tap_listener.dart';
 import 'tab_cubit.dart';
 
 class AppShell extends StatelessWidget {
@@ -28,41 +31,46 @@ class AppShell extends StatelessWidget {
       (Symbols.edit_note_rounded, AppLocale.navJournal),
       (Symbols.insights_rounded, AppLocale.navReview),
     ];
-    return BlocBuilder<TabCubit, AppTab>(
-      builder: (context, tab) => Scaffold(
-        body: SafeArea(
-          bottom: false,
-          child: IndexedStack(
-            index: tab.index,
-            children: [
-              HomeView(
-                userName: settings.name,
-                onCreateObjective: openWizard,
-                onOpenProfile: () => ProfileView.open(context),
-              ),
-              const JournalView(),
-              YearReviewView(onYearStarted: () => context.read<TabCubit>().selected(AppTab.objectives)),
+    return ReminderTapListener(
+      child: BlocBuilder<TabCubit, AppTab>(
+        builder: (context, tab) => Scaffold(
+          body: SafeArea(
+            bottom: false,
+            child: IndexedStack(
+              index: tab.index,
+              children: [
+                HomeView(
+                  userName: settings.name,
+                  onCreateObjective: openWizard,
+                  onOpenProfile: () => ProfileView.open(
+                    context,
+                    extraSections: [BackupSection(onImported: context.read<SettingsCubit>().reload)],
+                  ),
+                ),
+                const JournalView(),
+                YearReviewView(onYearStarted: () => context.read<TabCubit>().selected(AppTab.objectives)),
+              ],
+            ),
+          ),
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: tab.index,
+            onDestinationSelected: (i) => context.read<TabCubit>().selected(AppTab.values[i]),
+            backgroundColor: context.palette.navBar,
+            indicatorColor: context.palette.navIndicator,
+            surfaceTintColor: Colors.transparent,
+            height: 80,
+            labelTextStyle: WidgetStateProperty.resolveWith(
+              (states) => context.text.sans(12, weight: states.contains(WidgetState.selected) ? 700 : 500),
+            ),
+            destinations: [
+              for (final (icon, label) in destinations)
+                NavigationDestination(
+                  icon: Icon(icon, color: context.palette.ink),
+                  selectedIcon: Icon(icon, fill: 1, color: context.palette.ink),
+                  label: label.getString(context),
+                ),
             ],
           ),
-        ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: tab.index,
-          onDestinationSelected: (i) => context.read<TabCubit>().selected(AppTab.values[i]),
-          backgroundColor: context.palette.navBar,
-          indicatorColor: context.palette.navIndicator,
-          surfaceTintColor: Colors.transparent,
-          height: 80,
-          labelTextStyle: WidgetStateProperty.resolveWith(
-            (states) => context.text.sans(12, weight: states.contains(WidgetState.selected) ? 700 : 500),
-          ),
-          destinations: [
-            for (final (icon, label) in destinations)
-              NavigationDestination(
-                icon: Icon(icon, color: context.palette.ink),
-                selectedIcon: Icon(icon, fill: 1, color: context.palette.ink),
-                label: label.getString(context),
-              ),
-          ],
         ),
       ),
     );

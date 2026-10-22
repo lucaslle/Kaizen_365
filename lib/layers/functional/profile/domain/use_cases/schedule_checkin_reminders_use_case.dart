@@ -9,15 +9,17 @@ class ScheduleCheckinRemindersUseCase {
   final ReminderGateway _gateway;
   final Clock _clock;
 
-  Future<void> call(CheckinRhythm rhythm) async {
+  Future<void> call(UserSettings settings) async {
     await _gateway.cancelAll();
-    switch (rhythm) {
+    if (!settings.areRemindersEnabled) return;
+    final minutes = settings.reminderMinutes;
+    switch (settings.rhythm) {
       case CheckinRhythm.weekly:
-        await _gateway.scheduleWeekly(weekday: DateTime.sunday, hour: ReminderSchedule.hour);
+        await _gateway.scheduleWeekly(weekday: DateTime.sunday, minutes: minutes);
       case CheckinRhythm.monthly:
-        await _gateway.scheduleMonthly(day: 1, hour: ReminderSchedule.hour);
+        await _gateway.scheduleMonthly(day: 1, minutes: minutes);
       case CheckinRhythm.biweekly:
-        for (final (i, at) in ReminderSchedule.nextBiweekly(_clock()).indexed) {
+        for (final (i, at) in ReminderSchedule.nextBiweekly(_clock(), minutes).indexed) {
           await _gateway.scheduleOnce(id: i + 1, at: at);
         }
     }

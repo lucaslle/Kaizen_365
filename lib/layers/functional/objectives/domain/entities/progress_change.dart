@@ -8,6 +8,7 @@ class ProgressChange {
     this.to = 0,
     this.total = 0,
     this.unit = '',
+    this.keyResultId = '',
   });
 
   final ProgressChangeKind kind;
@@ -16,4 +17,7 @@ class ProgressChange {
   final double to;
   final int total;
   final String unit;
+
+  /// Empty for changes recorded before key results were referenced by id.
+  final String keyResultId;
 }

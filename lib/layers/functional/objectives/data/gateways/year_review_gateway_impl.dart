@@ -5,6 +5,7 @@ import '../../../../technical/clock/clock.dart';
 import '../../../../technical/preferences/app_preferences.dart';
 import '../../domain/entities/year_review.dart';
 import '../../domain/gateways/year_review_gateway.dart';
+import '../models/year_review_dto.dart';
 
 class YearReviewGatewayImpl implements YearReviewGateway {
   YearReviewGatewayImpl(this._preferences, this._clock);
@@ -37,13 +38,30 @@ class YearReviewGatewayImpl implements YearReviewGateway {
   @override
   YearReview load(int year) {
     final stored = _reviews()['$year'];
-    if (stored != null) return _fromJson(stored as Map<String, dynamic>);
+    if (stored != null) return YearReviewDto.fromJson(stored as Map<String, dynamic>);
     return year == activeYear() ? _legacyReview() : const YearReview();
   }
 
   @override
-  Future<void> save(int year, YearReview review) =>
-      _preferences.setString(PreferenceKey.yearReviews, jsonEncode({..._reviews(), '$year': _toJson(review)}));
+  Future<void> save(int year, YearReview review) => _preferences.setString(
+    PreferenceKey.yearReviews,
+    jsonEncode({..._reviews(), '$year': YearReviewDto.toJson(review)}),
+  );
+
+  @override
+  Map<int, YearReview> loadAll() => {
+    for (final MapEntry(:key, :value) in _reviews().entries)
+      int.parse(key): YearReviewDto.fromJson(value as Map<String, dynamic>),
+  };
+
+  @override
+  Future<void> replaceAll(Map<int, YearReview> reviews, {required int activeYear}) async {
+    await _preferences.setString(
+      PreferenceKey.yearReviews,
+      jsonEncode({for (final MapEntry(:key, :value) in reviews.entries) '$key': YearReviewDto.toJson(value)}),
+    );
+    await setActiveYear(activeYear);
+  }
 
   Map<String, dynamic> _reviews() {
     final raw = _preferences.getString(PreferenceKey.yearReviews);
@@ -56,21 +74,6 @@ class YearReviewGatewayImpl implements YearReviewGateway {
     carriedObjectiveIds: {...?_preferences.getStringList(PreferenceKey.carriedObjectiveIds)},
     reflections: {
       for (final MapEntry(:key, :value) in _legacyReflectionKeys.entries) key: _preferences.getString(value) ?? '',
-    },
-  );
-
-  static Map<String, dynamic> _toJson(YearReview review) => {
-    'isClosed': review.isClosed,
-    'carriedObjectiveIds': review.carriedObjectiveIds.toList(),
-    'reflections': {for (final MapEntry(:key, :value) in review.reflections.entries) key.name: value},
-  };
-
-  static YearReview _fromJson(Map<String, dynamic> json) => YearReview(
-    isClosed: json['isClosed'] as bool,
-    carriedObjectiveIds: {...(json['carriedObjectiveIds'] as List).cast<String>()},
-    reflections: {
-      for (final MapEntry(:key, :value) in (json['reflections'] as Map<String, dynamic>).entries)
-        Reflection.values.byName(key): value as String,
     },
   );
 }

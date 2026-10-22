@@ -15,7 +15,9 @@ import '../widgets/checkin_timeline_item.dart';
 import '../widgets/domain_label.dart';
 import '../widgets/key_result_card.dart';
 import '../widgets/progress_hero_card.dart';
-import '../../../../technical/theme/app_colors.dart';
+import '../../../../technical/theme/widgets/confirm_dialog.dart';
+import '../../domain/entities/progress_change.dart';
+import '../widgets/progress_chart.dart';
 import 'checkin_sheet.dart';
 import 'objective_wizard_view.dart';
 import '../../../../technical/theme/app_palette.dart';
@@ -63,6 +65,7 @@ class ObjectiveDetailView extends StatelessWidget {
         return _DetailContent(
           objective: objective,
           expected: expectedProgress(state.now, year: objective.year),
+          now: state.now,
         );
       },
     ),
@@ -76,42 +79,25 @@ class ObjectiveDetailView extends StatelessWidget {
   Future<void> _confirmDelete(BuildContext context, Objective objective) async {
     final cubit = context.read<ObjectivesCubit>();
     final navigator = Navigator.of(context);
-    final isConfirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: context.palette.surface,
-        title: Text(AppLocale.deleteConfirmTitle.getString(context), style: context.text.sheetTitle),
-        content: Text(context.formatString(AppLocale.deleteConfirmBody, [objective.title]), style: context.text.body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(AppLocale.cancel.getString(context), style: context.text.sans(15, weight: 600)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(
-              AppLocale.deleteConfirm.getString(context),
-              style: context.text.sans(
-                15,
-                weight: 600,
-                color: context.palette.brightness == Brightness.dark ? AppColors.lateBg : AppColors.lateFg,
-              ),
-            ),
-          ),
-        ],
-      ),
+    final isConfirmed = await confirmDestructive(
+      context,
+      title: AppLocale.deleteConfirmTitle.getString(context),
+      body: context.formatString(AppLocale.deleteConfirmBody, [objective.title]),
+      confirmLabel: AppLocale.deleteConfirm.getString(context),
+      cancelLabel: AppLocale.cancel.getString(context),
     );
-    if (isConfirmed != true) return;
+    if (!isConfirmed) return;
     navigator.pop();
     await cubit.deleteObjective(objective);
   }
 }
 
 class _DetailContent extends StatelessWidget {
-  const _DetailContent({required this.objective, required this.expected});
+  const _DetailContent({required this.objective, required this.expected, required this.now});
 
   final Objective objective;
   final double expected;
+  final DateTime now;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +113,7 @@ class _DetailContent extends StatelessWidget {
         if (objective.why.isNotEmpty) ...[
           const SizedBox(height: 10),
           Text(
-            '« ${objective.why} »',
+            context.formatString(AppLocale.quoted, [objective.why]),
             style: context.text
                 .sans(16, height: 1.45, color: context.palette.muted)
                 .copyWith(fontStyle: FontStyle.italic),
@@ -135,6 +121,14 @@ class _DetailContent extends StatelessWidget {
         ],
         const SizedBox(height: 20),
         ProgressHeroCard(objective: objective, expected: expected),
+        const SizedBox(height: 20),
+        Text(AppLocale.chartTitle.getString(context), style: context.text.sectionTitle),
+        const SizedBox(height: 12),
+        ProgressChart(
+          objective: objective,
+          now: now,
+          color: DomainStyle.of(objective.domain).textColor(context.palette.brightness),
+        ),
         const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -173,8 +167,28 @@ class _DetailContent extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 14),
-        for (final checkin in objective.checkins) CheckinTimelineItem(checkin: checkin),
+        for (final checkin in objective.checkins)
+          CheckinTimelineItem(
+            checkin: checkin,
+            onDelete:
+                checkin.change?.kind == ProgressChangeKind.created ||
+                    checkin.change?.kind == ProgressChangeKind.carriedOver
+                ? null
+                : () => _confirmDeleteCheckin(context, objective, checkin.id),
+          ),
       ],
     );
+  }
+
+  Future<void> _confirmDeleteCheckin(BuildContext context, Objective objective, String checkinId) async {
+    final cubit = context.read<ObjectivesCubit>();
+    final isConfirmed = await confirmDestructive(
+      context,
+      title: AppLocale.deleteCheckinTitle.getString(context),
+      body: AppLocale.deleteCheckinBody.getString(context),
+      confirmLabel: AppLocale.deleteConfirm.getString(context),
+      cancelLabel: AppLocale.cancel.getString(context),
+    );
+    if (isConfirmed) await cubit.deleteCheckin(objective, checkinId);
   }
 }

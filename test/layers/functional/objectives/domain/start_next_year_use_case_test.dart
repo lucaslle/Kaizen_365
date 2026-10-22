@@ -32,6 +32,12 @@ class _FakeYearGateway implements YearReviewGateway {
 
   @override
   Future<void> save(int year, YearReview review) async {}
+
+  @override
+  Map<int, YearReview> loadAll() => {2026: review};
+
+  @override
+  Future<void> replaceAll(Map<int, YearReview> reviews, {required int activeYear}) async {}
 }
 
 Objective _objective(String id, double percent, {int year = 2026}) => Objective(

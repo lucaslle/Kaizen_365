@@ -10,4 +10,8 @@ abstract interface class YearReviewGateway {
   YearReview load(int year);
 
   Future<void> save(int year, YearReview review);
+
+  Map<int, YearReview> loadAll();
+
+  Future<void> replaceAll(Map<int, YearReview> reviews, {required int activeYear});
 }

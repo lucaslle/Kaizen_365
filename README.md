@@ -13,12 +13,20 @@ Tout tourne sur le téléphone : aucune API externe, aucun compte, aucune donné
   - liste de jalons à cocher.
 - **Statut automatique** de chaque objectif (Atteint, En bonne voie, À risque, En retard), calculé par rapport au temps écoulé dans l'année.
 - **Check-ins** : chaque progression est journalisée automatiquement, et on peut ajouter un point libre avec une humeur.
-- **Modification et suppression** d'un objectif, en conservant la progression et l'historique lors d'une modification.
-- **Journal** de tous les check-ins, filtrable par objectif.
+- **Graphique d'évolution** de chaque objectif, comparé à la progression attendue.
+- **Modification et suppression** d'un objectif. La progression et l'historique sont conservés lors d'une modification, et une suppression s'annule pendant quelques secondes.
+- **Suppression d'un check-in**, qui annule la progression qu'il avait enregistrée.
+- **Célébration** quand un objectif est atteint.
+- **Accueil réordonnable** (appui long) ou trié par statut ou par progression.
+- **Journal** de tous les check-ins, filtrable par objectif et avec recherche.
 - **Bilan de l'année** : score, statistiques, report des objectifs non atteints, réflexions et clôture.
-- **Rappels de check-in** par notifications locales : chaque semaine, un dimanche sur deux ou chaque mois.
-- **Profil** : prénom, rythme des rappels et thème, modifiables à tout moment.
-- **5 thèmes** : Sable, Nuit (sombre), Forêt, Océan et Lavande.
+- **Passage à l'année suivante** : les objectifs reportés sont recopiés avec leur progression. Les bilans des années passées restent consultables.
+- **Rappels de check-in** par notifications locales : chaque semaine, un dimanche sur deux ou chaque mois, à l'heure choisie. Toucher un rappel ouvre directement le check-in.
+- **Widget d'écran d'accueil Android** : score de l'année, temps écoulé et prochain rappel.
+- **Profil** : prénom, rappels (activation, heure, rythme), thème et langue.
+- **6 thèmes** : Automatique (suit le mode sombre du téléphone), Sable, Nuit, Forêt, Océan et Lavande.
+- **Français et anglais**, selon la langue du téléphone ou au choix.
+- **Sauvegarde** : export de toutes les données dans un fichier JSON (via le partage du téléphone), puis restauration sur un autre appareil.
 
 ## Prérequis
 
@@ -33,13 +41,17 @@ flutter pub get
 flutter run
 ```
 
-Pour générer un APK installable :
+Pour générer les APK installables, un par architecture de processeur (environ 20 Mo chacun, contre 52 Mo pour un APK universel) :
 
 ```bash
-flutter build apk --release
+flutter build apk --release --split-per-abi
 ```
 
-Le fichier est créé dans `build/app/outputs/flutter-apk/app-release.apk`.
+Sur un téléphone récent, installe `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk`. Pour le Play Store, génère plutôt un App Bundle :
+
+```bash
+flutter build appbundle
+```
 
 ## Tests
 
@@ -48,7 +60,15 @@ flutter analyze
 flutter test
 ```
 
-Le test `test/app/app_flow_test.dart` parcourt l'application de bout en bout : onboarding, création, mise à jour, check-in, journal, bilan, profil, thème, modification et suppression. Il compare chaque écran à une capture de référence, rangée dans `test/app/screenshots/`.
+Le test `test/app/app_flow_test.dart` parcourt l'application de bout en bout :
+- onboarding et création d'un objectif ;
+- mise à jour, check-in et suppression d'un check-in ;
+- recherche dans le journal et bilan ;
+- profil, langue et thème ;
+- passage à l'année suivante ;
+- modification, suppression et annulation de la suppression.
+
+Il compare chaque écran à une capture de référence, rangée dans `test/app/screenshots/`.
 
 Après une modification visuelle volontaire, régénère les captures :
 
@@ -67,16 +87,18 @@ lib/
   layers/
     technical/
       clock/                Horloge injectable
-      localization/         Textes (flutter_localization) et formats français (intl)
+      files/                Partage et sélection de fichiers (sauvegarde)
+      home_screen_widget/   Widget d'écran d'accueil Android
+      localization/         Textes français et anglais (flutter_localization) et formats (intl)
       notifications/        Notifications locales programmées
       preferences/          Stockage clé-valeur (shared_preferences)
       theme/                Palettes, thèmes, styles de texte et composants réutilisables
     functional/
-      objectives/           Objectifs, check-ins, journal et bilan
+      objectives/           Objectifs, check-ins, journal, bilan et sauvegarde
         domain/             Entités, contrats (gateways) et cas d'usage
         data/               Persistance JSON locale
         presentation/       Cubits, écrans et widgets
-      profile/              Onboarding, réglages et rappels
+      profile/              Onboarding, réglages, langue et rappels
 ```
 
 - **État** : `flutter_bloc` (Cubit). La chaîne d'appel est Vue, puis Cubit, puis cas d'usage, puis gateway.

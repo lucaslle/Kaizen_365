@@ -14,4 +14,13 @@ class FakeObjectiveGateway implements ObjectiveGateway {
 
   @override
   Future<void> delete(String objectiveId) async => saved.removeWhere((o) => o.id == objectiveId);
+
+  @override
+  Future<void> reorder(List<String> orderedIds) async =>
+      saved.sort((a, b) => orderedIds.indexOf(a.id).compareTo(orderedIds.indexOf(b.id)));
+
+  @override
+  Future<void> replaceAll(List<Objective> objectives) async => saved
+    ..clear()
+    ..addAll(objectives);
 }

@@ -76,6 +76,7 @@ abstract final class ObjectiveDto {
             'to': c.change!.to,
             'total': c.change!.total,
             'unit': c.change!.unit,
+            'keyResultId': c.change!.keyResultId,
           },
   };
 
@@ -96,6 +97,7 @@ abstract final class ObjectiveDto {
               to: (change['to'] as num).toDouble(),
               total: change['total'] as int,
               unit: change['unit'] as String,
+              keyResultId: change['keyResultId'] as String? ?? '',
             ),
     );
   }

@@ -35,7 +35,7 @@ class YearReviewCubit extends Cubit<YearReviewState> {
   StreamSubscription<int>? _yearSubscription;
 
   static YearReviewState _initialState(int year, GetYearReviewUseCase getReview, Clock clock) =>
-      YearReviewState(year: year, review: getReview(year), now: clock());
+      YearReviewState(year: year, activeYear: year, review: getReview(year), now: clock());
 
   void load() {
     _subscription?.cancel();
@@ -45,9 +45,11 @@ class YearReviewCubit extends Cubit<YearReviewState> {
     );
     _yearSubscription?.cancel();
     _yearSubscription = _watchActiveYear().listen(
-      (year) => emit(state.copyWith(year: year, review: _getReview(year), now: _clock())),
+      (year) => emit(state.copyWith(year: year, activeYear: year, review: _getReview(year), now: _clock())),
     );
   }
+
+  void yearSelected(int year) => emit(state.copyWith(year: year, review: _getReview(year)));
 
   void carryToggled(String objectiveId) {
     final ids = {...state.review.carriedObjectiveIds};

@@ -12,6 +12,7 @@ import '../cubit/year_review_cubit.dart';
 import '../cubit/year_review_state.dart';
 import '../widgets/objective_review_list.dart';
 import '../widgets/year_closing.dart';
+import '../widgets/year_selector.dart';
 import '../widgets/year_stats.dart';
 
 class YearReviewView extends StatelessWidget {
@@ -56,6 +57,10 @@ class YearReviewView extends StatelessWidget {
       return ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
         children: [
+          if (state.availableYears.length > 1) ...[
+            YearSelector(years: state.availableYears, selected: year, onSelected: cubit.yearSelected),
+            const SizedBox(height: 12),
+          ],
           Text(context.formatString(AppLocale.reviewTitle, [year]), style: context.text.screenTitle),
           const SizedBox(height: 4),
           Text(intro, style: context.text.bodyMuted),
@@ -70,6 +75,7 @@ class YearReviewView extends StatelessWidget {
               carried: state.review.carriedObjectiveIds,
               now: now,
               year: year,
+              isEditable: state.isActiveYear && !state.review.isClosed,
             ),
           ],
           const SizedBox(height: 22),

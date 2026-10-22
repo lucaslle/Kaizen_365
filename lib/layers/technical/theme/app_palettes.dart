@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../localization/app_locale.dart';
 import 'app_palette.dart';
 
-enum AppThemeName { sand, night, forest, ocean, lavender }
+/// [auto] follows the phone: Sand by day, Night in dark mode.
+enum AppThemeName { auto, sand, night, forest, ocean, lavender }
 
 abstract final class AppPalettes {
   static AppPalette of(AppThemeName name) => switch (name) {
+    AppThemeName.auto => sand,
     AppThemeName.sand => sand,
     AppThemeName.night => night,
     AppThemeName.forest => forest,
@@ -15,6 +17,7 @@ abstract final class AppPalettes {
   };
 
   static String labelKey(AppThemeName name) => switch (name) {
+    AppThemeName.auto => AppLocale.themeAuto,
     AppThemeName.sand => AppLocale.themeSand,
     AppThemeName.night => AppLocale.themeNight,
     AppThemeName.forest => AppLocale.themeForest,

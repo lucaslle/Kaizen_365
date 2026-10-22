@@ -19,6 +19,7 @@ class YearClosing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final year = state.year;
+    if (!state.isActiveYear) return const SizedBox.shrink();
     if (!state.review.isClosed) {
       return AppButton(
         label: context.formatString(AppLocale.closeYear, [year]),

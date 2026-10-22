@@ -80,7 +80,12 @@ class WizardWhatStep extends StatelessWidget {
                 child: Row(
                   spacing: 10,
                   children: [
-                    Icon(DomainStyle.of(domain).icon, size: 22, fill: 1, color: DomainStyle.of(domain).color),
+                    Icon(
+                      DomainStyle.of(domain).icon,
+                      size: 22,
+                      fill: 1,
+                      color: DomainStyle.of(domain).textColor(context.palette.brightness),
+                    ),
                     Flexible(
                       child: Text(
                         DomainStyle.of(domain).labelKey.getString(context),
@@ -159,7 +164,10 @@ class WizardRecapStep extends StatelessWidget {
             DomainLabel(domain: state.domain),
             Text(state.title.trim(), style: context.text.sans(22, weight: 600, height: 1.15, tracking: -0.02)),
             if (state.why.trim().isNotEmpty)
-              Text('« ${state.why.trim()} »', style: context.text.bodyMuted.copyWith(fontStyle: FontStyle.italic)),
+              Text(
+                context.formatString(AppLocale.quoted, [state.why.trim()]),
+                style: context.text.bodyMuted.copyWith(fontStyle: FontStyle.italic),
+              ),
             Divider(height: 1, color: context.palette.border),
             for (final k in state.keyResults) WizardKeyResultTile(keyResult: k, isCompact: true),
           ],

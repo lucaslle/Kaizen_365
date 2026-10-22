@@ -8,14 +8,20 @@ import '../../../../technical/theme/app_palette.dart';
 import '../../../../technical/theme/app_palettes.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../cubit/settings_cubit.dart';
+import '../../../../technical/theme/widgets/toast.dart';
+import '../widgets/language_selector.dart';
+import '../widgets/reminder_settings.dart';
 import '../widgets/settings_fields.dart';
 import '../widgets/theme_picker.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  const ProfileView({super.key, this.extraSections = const []});
 
-  static Future<void> open(BuildContext context) =>
-      Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const ProfileView()));
+  /// Sections owned by other layers, such as data backup, shown at the bottom.
+  final List<Widget> extraSections;
+
+  static Future<void> open(BuildContext context, {List<Widget> extraSections = const []}) =>
+      Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ProfileView(extraSections: extraSections)));
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -28,7 +34,9 @@ class ProfileView extends StatelessWidget {
       ),
       title: Text(AppLocale.profileTitle.getString(context).toUpperCase(), style: context.text.overline),
     ),
-    body: BlocBuilder<SettingsCubit, SettingsState>(
+    body: BlocConsumer<SettingsCubit, SettingsState>(
+      listenWhen: (previous, current) => current.wasPermissionRefused,
+      listener: (context, state) => showToast(context, AppLocale.permissionRefused.getString(context), isError: true),
       builder: (context, state) {
         final settings = state.settings;
         final name = settings.name.trim();
@@ -59,14 +67,15 @@ class ProfileView extends StatelessWidget {
             const SizedBox(height: 28),
             NameField(name: settings.name),
             const SizedBox(height: 28),
-            RhythmSelector(rhythm: settings.rhythm),
-            const SizedBox(height: 8),
-            Text(AppLocale.profileReminderHelp.getString(context), style: context.text.caption),
+            ReminderSettings(settings: settings, now: DateTime.now()),
             const SizedBox(height: 28),
             ThemePicker(
               selected: AppPalettes.parse(settings.themeName),
               onSelected: (theme) => context.read<SettingsCubit>().themeSelected(theme.name),
             ),
+            const SizedBox(height: 28),
+            LanguageSelector(languageCode: settings.languageCode),
+            for (final section in extraSections) ...[const SizedBox(height: 28), section],
           ],
         );
       },

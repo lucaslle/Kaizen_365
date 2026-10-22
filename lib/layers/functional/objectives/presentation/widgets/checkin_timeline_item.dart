@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+import '../../../../technical/localization/app_locale.dart';
 
 import '../../../../technical/localization/formatters.dart';
 import '../../../../technical/theme/app_text.dart';
@@ -8,9 +12,10 @@ import '../../../../technical/theme/app_palette.dart';
 import 'checkin_content.dart';
 
 class CheckinTimelineItem extends StatelessWidget {
-  const CheckinTimelineItem({super.key, required this.checkin});
+  const CheckinTimelineItem({super.key, required this.checkin, this.onDelete});
 
   final Checkin checkin;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +55,15 @@ class CheckinTimelineItem extends StatelessWidget {
                     children: [
                       Text(Formatters.shortDate(checkin.date), style: context.text.monoSmall),
                       CheckinMood(checkin: checkin),
+                      if (onDelete != null) ...[
+                        const Spacer(),
+                        IconButton(
+                          tooltip: AppLocale.deleteCheckin.getString(context),
+                          onPressed: onDelete,
+                          visualDensity: VisualDensity.compact,
+                          icon: Icon(Symbols.delete_rounded, size: 18, color: context.palette.muted),
+                        ),
+                      ],
                     ],
                   ),
                   CheckinBody(checkin: checkin, chipColor: context.palette.sunken),

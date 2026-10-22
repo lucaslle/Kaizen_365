@@ -7,30 +7,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:kaizen365/app/dependency_injection.dart';
 import 'package:kaizen365/app/kaizen_app.dart';
+import 'package:kaizen365/layers/functional/objectives/domain/entities/objective_sort.dart';
+import 'package:kaizen365/layers/functional/objectives/domain/gateways/backup_gateway.dart';
+import 'package:kaizen365/layers/functional/objectives/domain/gateways/objective_preferences_gateway.dart';
+import 'package:kaizen365/layers/technical/localization/app_language.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/entities/objective.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/entities/year_review.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/gateways/objective_gateway.dart';
 import 'package:kaizen365/layers/functional/objectives/domain/gateways/year_review_gateway.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/add_checkin_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/create_objective_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/delete_objective_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/get_active_year_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/get_year_review_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/save_year_review_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/start_next_year_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/toggle_milestone_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/update_objective_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/update_key_result_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/watch_active_year_use_case.dart';
-import 'package:kaizen365/layers/functional/objectives/domain/use_cases/watch_objectives_use_case.dart';
 import 'package:kaizen365/layers/functional/profile/domain/entities/user_settings.dart';
 import 'package:kaizen365/layers/functional/profile/domain/gateways/reminder_gateway.dart';
 import 'package:kaizen365/layers/functional/profile/domain/gateways/settings_gateway.dart';
-import 'package:kaizen365/layers/functional/profile/domain/use_cases/complete_onboarding_use_case.dart';
-import 'package:kaizen365/layers/functional/profile/domain/use_cases/get_settings_use_case.dart';
-import 'package:kaizen365/layers/functional/profile/domain/use_cases/schedule_checkin_reminders_use_case.dart';
-import 'package:kaizen365/layers/functional/profile/domain/use_cases/update_settings_use_case.dart';
 
 import '../layers/functional/profile/fake_reminder_gateway.dart';
 import 'package:kaizen365/layers/technical/clock/clock.dart';
@@ -58,10 +47,40 @@ class _MemoryObjectiveGateway implements ObjectiveGateway {
     _objectives = _objectives.where((o) => o.id != objectiveId).toList();
     _changes.add(_objectives);
   }
+
+  @override
+  Future<void> reorder(List<String> orderedIds) async {
+    _objectives = [..._objectives]..sort((a, b) => orderedIds.indexOf(a.id).compareTo(orderedIds.indexOf(b.id)));
+    _changes.add(_objectives);
+  }
+
+  @override
+  Future<void> replaceAll(List<Objective> objectives) async {
+    _objectives = objectives;
+    _changes.add(_objectives);
+  }
+}
+
+class _NoBackupGateway implements BackupGateway {
+  @override
+  Future<void> export() async {}
+
+  @override
+  Future<bool> import() async => false;
+}
+
+class _MemoryObjectivePreferences implements ObjectivePreferencesGateway {
+  ObjectiveSort _sort = ObjectiveSort.manual;
+
+  @override
+  ObjectiveSort sort() => _sort;
+
+  @override
+  Future<void> setSort(ObjectiveSort sort) async => _sort = sort;
 }
 
 class _MemorySettingsGateway implements SettingsGateway {
-  UserSettings settings = const UserSettings();
+  UserSettings settings = const UserSettings(languageCode: 'fr');
 
   @override
   UserSettings load() => settings;
@@ -95,6 +114,17 @@ class _MemoryYearReviewGateway implements YearReviewGateway {
 
   @override
   Future<void> save(int year, YearReview review) async => _reviews[year] = review;
+
+  @override
+  Map<int, YearReview> loadAll() => Map.of(_reviews);
+
+  @override
+  Future<void> replaceAll(Map<int, YearReview> reviews, {required int activeYear}) async {
+    _reviews
+      ..clear()
+      ..addAll(reviews);
+    await setActiveYear(activeYear);
+  }
 }
 
 Future<void> _loadFont(String family, String asset) => (FontLoader(family)..addFont(rootBundle.load(asset))).load();
@@ -112,30 +142,20 @@ void main() {
     );
     final localization = FlutterLocalization.instance;
     await localization.ensureInitialized();
-    localization.init(mapLocales: [const MapLocale('fr', AppLocale.fr)], initLanguageCode: 'fr');
+    localization.init(
+      mapLocales: [const MapLocale('fr', AppLocale.fr), const MapLocale('en', AppLocale.en)],
+      initLanguageCode: 'fr',
+    );
+    AppLanguage.apply('fr');
     final getIt = GetIt.instance
       ..registerSingleton<Clock>(() => DateTime(2026, 10, 13, 9))
       ..registerSingleton<ObjectiveGateway>(_MemoryObjectiveGateway())
       ..registerSingleton<SettingsGateway>(_MemorySettingsGateway())
       ..registerSingleton<YearReviewGateway>(_MemoryYearReviewGateway())
-      ..registerSingleton<ReminderGateway>(FakeReminderGateway());
-    getIt
-      ..registerLazySingleton(() => WatchObjectivesUseCase(getIt()))
-      ..registerLazySingleton(() => CreateObjectiveUseCase(getIt(), getIt()))
-      ..registerLazySingleton(() => UpdateObjectiveUseCase(getIt()))
-      ..registerLazySingleton(() => DeleteObjectiveUseCase(getIt()))
-      ..registerLazySingleton(() => AddCheckinUseCase(getIt(), getIt()))
-      ..registerLazySingleton(() => ToggleMilestoneUseCase(getIt(), getIt()))
-      ..registerLazySingleton(() => UpdateKeyResultUseCase(getIt(), getIt()))
-      ..registerLazySingleton(() => GetYearReviewUseCase(getIt()))
-      ..registerLazySingleton(() => SaveYearReviewUseCase(getIt()))
-      ..registerLazySingleton(() => GetActiveYearUseCase(getIt()))
-      ..registerLazySingleton(() => WatchActiveYearUseCase(getIt()))
-      ..registerLazySingleton(() => StartNextYearUseCase(getIt(), getIt(), getIt()))
-      ..registerLazySingleton(() => GetSettingsUseCase(getIt()))
-      ..registerLazySingleton(() => ScheduleCheckinRemindersUseCase(getIt(), getIt()))
-      ..registerLazySingleton(() => CompleteOnboardingUseCase(getIt(), getIt(), getIt()))
-      ..registerLazySingleton(() => UpdateSettingsUseCase(getIt(), getIt(), getIt()));
+      ..registerSingleton<ReminderGateway>(FakeReminderGateway())
+      ..registerSingleton<BackupGateway>(_NoBackupGateway())
+      ..registerSingleton<ObjectivePreferencesGateway>(_MemoryObjectivePreferences());
+    registerUseCases(getIt);
   });
 
   testWidgets('onboarding, creating an objective and updating it', (tester) async {
@@ -187,6 +207,17 @@ void main() {
     await tap('Enregistrer');
     expect(find.text('Kilomètres courus : 0 → 10 km'), findsOneWidget);
 
+    await tester.tap(find.byTooltip('Supprimer ce check-in').first);
+    await tester.pumpAndSettle();
+    await tap('Supprimer');
+    expect(find.text('Kilomètres courus : 0 → 10 km'), findsNothing);
+    expect(find.text('0 / 900 km'), findsOneWidget);
+    await tap('Mettre à jour');
+    await tester.tap(find.byTooltip('Augmenter'));
+    await tester.pumpAndSettle();
+    await tap('Enregistrer');
+    expect(find.text('10 / 900 km'), findsOneWidget);
+
     await tap('Nouveau');
     await tester.enterText(find.byType(TextField), 'Première sortie de 10 km.');
     await tester.pumpAndSettle();
@@ -197,6 +228,12 @@ void main() {
     await shot('11_home');
     await tap('Journal');
     await shot('12_journal');
+    await tester.enterText(find.byType(TextField), 'sortie');
+    await tester.pumpAndSettle();
+    expect(find.text('Première sortie de 10 km.'), findsOneWidget);
+    expect(find.text('Kilomètres courus : 0 → 10 km'), findsNothing);
+    await tester.tap(find.byTooltip('Effacer la recherche'));
+    await tester.pumpAndSettle();
     await tap('Bilan');
     await shot('13_review');
 
@@ -205,6 +242,18 @@ void main() {
     await tester.pumpAndSettle();
     await tap('Toutes les 2 semaines');
     await shot('14_profile');
+    await tester.scrollUntilVisible(find.text('English'), 300, scrollable: find.byType(Scrollable).first);
+    await tap('English');
+    expect(find.text('PROFILE'), findsOneWidget);
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    expect(find.text('My 2026 goals'), findsOneWidget);
+    await shot('14b_home_english');
+    await tester.tap(find.byTooltip('Open my profile'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Français'), 300, scrollable: find.byType(Scrollable).first);
+    await tap('Français');
+    await tester.scrollUntilVisible(find.bySemanticsLabel('Nuit'), -300, scrollable: find.byType(Scrollable).first);
     await tester.tap(find.bySemanticsLabel('Nuit'));
     await tester.pumpAndSettle();
     await shot('15_profile_night');
@@ -253,6 +302,8 @@ void main() {
     await tap('Supprimer');
     expect(find.text('Objectif supprimé'), findsOneWidget);
     expect(find.text("Aucun cap pour l'instant"), findsOneWidget);
+    await tap('Annuler');
+    expect(find.text('Courir le semi de Lyon'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

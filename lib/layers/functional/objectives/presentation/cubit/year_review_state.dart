@@ -4,6 +4,7 @@ import '../../domain/entities/year_review.dart';
 class YearReviewState {
   const YearReviewState({
     required this.year,
+    required this.activeYear,
     required this.review,
     required this.now,
     this.allObjectives = const [],
@@ -11,7 +12,9 @@ class YearReviewState {
     this.startedYearCarriedCount,
   });
 
+  /// The year shown, which may be a past one.
   final int year;
+  final int activeYear;
   final YearReview review;
   final DateTime now;
   final List<Objective> allObjectives;
@@ -25,8 +28,13 @@ class YearReviewState {
       if (o.year == year) o,
   ];
 
+  bool get isActiveYear => year == activeYear;
+
+  List<int> get availableYears => ({for (final o in allObjectives) o.year}..add(activeYear)).toList()..sort();
+
   YearReviewState copyWith({
     int? year,
+    int? activeYear,
     YearReview? review,
     List<Objective>? allObjectives,
     DateTime? now,
@@ -34,6 +42,7 @@ class YearReviewState {
     int? startedYearCarriedCount,
   }) => YearReviewState(
     year: year ?? this.year,
+    activeYear: activeYear ?? this.activeYear,
     review: review ?? this.review,
     now: now ?? this.now,
     allObjectives: allObjectives ?? this.allObjectives,

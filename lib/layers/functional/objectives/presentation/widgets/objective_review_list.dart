@@ -21,12 +21,14 @@ class ObjectiveReviewList extends StatelessWidget {
     required this.carried,
     required this.now,
     required this.year,
+    this.isEditable = true,
   });
 
   final List<Objective> objectives;
   final Set<String> carried;
   final DateTime now;
   final int year;
+  final bool isEditable;
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +79,15 @@ class ObjectiveReviewList extends StatelessWidget {
             ),
             Text(
               Formatters.percent(progress),
-              style: context.text.mono(20, weight: 600, color: DomainStyle.of(objective.domain).color),
+              style: context.text.mono(
+                20,
+                weight: 600,
+                color: DomainStyle.of(objective.domain).textColor(context.palette.brightness),
+              ),
             ),
           ],
         ),
-        if (progress < 0.999)
+        if (progress < 0.999 && isEditable)
           MergeSemantics(
             child: Row(
               children: [

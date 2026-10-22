@@ -8,6 +8,7 @@ import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/theme/app_text.dart';
 import '../../../../technical/theme/widgets/app_button.dart';
 import '../../../../technical/theme/widgets/motion.dart';
+import '../../../../technical/theme/widgets/toast.dart';
 import '../cubit/objective_wizard_cubit.dart';
 import '../cubit/objective_wizard_state.dart';
 import '../../domain/entities/objective.dart';
@@ -45,7 +46,7 @@ class ObjectiveWizardView extends StatelessWidget {
         previous.savedObjectiveId != current.savedObjectiveId || (current.hasFailed && !previous.hasFailed),
     listener: (context, state) {
       if (state.hasFailed) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocale.errorSaving.getString(context))));
+        showToast(context, AppLocale.errorSaving.getString(context), isError: true);
         return;
       }
       if (state.isEditing) {

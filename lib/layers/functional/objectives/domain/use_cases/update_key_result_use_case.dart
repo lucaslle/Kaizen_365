@@ -47,6 +47,7 @@ class UpdateKeyResultUseCase {
     KeyResultType.numeric when before.value != after.value => ProgressChange(
       kind: ProgressChangeKind.value,
       subject: before.title,
+      keyResultId: before.id,
       from: before.value,
       to: after.value,
       unit: before.unit,
@@ -54,6 +55,7 @@ class UpdateKeyResultUseCase {
     KeyResultType.percent when before.value != after.value => ProgressChange(
       kind: ProgressChangeKind.percent,
       subject: before.title,
+      keyResultId: before.id,
       from: before.value,
       to: after.value,
     ),
@@ -62,6 +64,7 @@ class UpdateKeyResultUseCase {
       ProgressChange(
         kind: ProgressChangeKind.milestones,
         subject: before.title,
+        keyResultId: before.id,
         from: before.doneCount.toDouble(),
         to: after.doneCount.toDouble(),
         total: after.milestones.length,

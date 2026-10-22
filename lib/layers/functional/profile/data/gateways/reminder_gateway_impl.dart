@@ -13,13 +13,16 @@ class ReminderGatewayImpl implements ReminderGateway {
   Future<void> cancelAll() => _notifications.cancelAll();
 
   @override
-  Future<void> scheduleWeekly({required int weekday, required int hour}) =>
-      _notifications.scheduleWeekly(weekday: weekday, hour: hour);
+  Future<void> scheduleWeekly({required int weekday, required int minutes}) =>
+      _notifications.scheduleWeekly(weekday: weekday, minutes: minutes);
 
   @override
-  Future<void> scheduleMonthly({required int day, required int hour}) =>
-      _notifications.scheduleMonthly(day: day, hour: hour);
+  Future<void> scheduleMonthly({required int day, required int minutes}) =>
+      _notifications.scheduleMonthly(day: day, minutes: minutes);
 
   @override
   Future<void> scheduleOnce({required int id, required DateTime at}) => _notifications.scheduleOnce(id: id, at: at);
+
+  @override
+  Stream<void> watchReminderTaps() => _notifications.watchTaps();
 }

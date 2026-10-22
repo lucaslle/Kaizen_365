@@ -65,40 +65,19 @@ class _ThemeTile extends StatelessWidget {
             spacing: 6,
             children: [
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(color: preview.background, borderRadius: BorderRadius.circular(12)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: 6,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(color: preview.inverse, borderRadius: BorderRadius.circular(6)),
-                        ),
-                      ),
-                      Container(
-                        height: 14,
-                        decoration: BoxDecoration(
-                          color: preview.surface,
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: preview.border),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: name == AppThemeName.auto
+                    ? Row(
+                        spacing: 4,
                         children: [
-                          Container(width: 22, height: 6, color: preview.ink),
-                          CircleAvatar(
-                            radius: 7,
-                            backgroundColor: preview.accent,
-                            child: isSelected ? Icon(Symbols.check_rounded, size: 10, color: preview.onAccent) : null,
+                          Expanded(
+                            child: _PalettePreview(palette: AppPalettes.sand, isSelected: isSelected),
+                          ),
+                          Expanded(
+                            child: _PalettePreview(palette: AppPalettes.night, isSelected: isSelected),
                           ),
                         ],
-                      ),
-                    ],
-                  ),
-                ),
+                      )
+                    : _PalettePreview(palette: preview, isSelected: isSelected),
               ),
               Text(
                 AppPalettes.labelKey(name).getString(context),
@@ -110,4 +89,47 @@ class _ThemeTile extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PalettePreview extends StatelessWidget {
+  const _PalettePreview({required this.palette, required this.isSelected});
+
+  final AppPalette palette;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(8),
+    decoration: BoxDecoration(color: palette.background, borderRadius: BorderRadius.circular(12)),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 6,
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(color: palette.inverse, borderRadius: BorderRadius.circular(6)),
+          ),
+        ),
+        Container(
+          height: 14,
+          decoration: BoxDecoration(
+            color: palette.surface,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: palette.border),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(child: Container(width: 22, height: 6, color: palette.ink)),
+            CircleAvatar(
+              radius: 7,
+              backgroundColor: palette.accent,
+              child: isSelected ? Icon(Symbols.check_rounded, size: 10, color: palette.onAccent) : null,
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

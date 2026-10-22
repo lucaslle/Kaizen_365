@@ -22,7 +22,11 @@ class ToggleMilestoneUseCase {
         Checkin(
           id: 'c${now.microsecondsSinceEpoch}',
           date: now,
-          change: ProgressChange(kind: ProgressChangeKind.milestoneDone, subject: milestone.title),
+          change: ProgressChange(
+            kind: ProgressChangeKind.milestoneDone,
+            subject: milestone.title,
+            keyResultId: keyResult.id,
+          ),
         ),
       );
     }

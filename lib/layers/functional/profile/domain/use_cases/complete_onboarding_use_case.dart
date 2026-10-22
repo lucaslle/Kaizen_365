@@ -11,9 +11,14 @@ class CompleteOnboardingUseCase {
   final ScheduleCheckinRemindersUseCase _scheduleReminders;
 
   Future<UserSettings> call(UserSettings draft) async {
-    final settings = draft.copyWith(name: draft.name.trim(), hasCompletedOnboarding: true);
+    final isAllowed = await _reminderGateway.requestPermission();
+    final settings = draft.copyWith(
+      name: draft.name.trim(),
+      hasCompletedOnboarding: true,
+      areRemindersEnabled: isAllowed,
+    );
     await _settingsGateway.save(settings);
-    if (await _reminderGateway.requestPermission()) await _scheduleReminders(settings.rhythm);
+    await _scheduleReminders(settings);
     return settings;
   }
 }

@@ -10,10 +10,17 @@ class UpdateSettingsUseCase {
   final ReminderGateway _reminderGateway;
   final ScheduleCheckinRemindersUseCase _scheduleReminders;
 
-  Future<void> call(UserSettings previous, UserSettings next) async {
-    await _settingsGateway.save(next);
-    if (next.rhythm != previous.rhythm && await _reminderGateway.requestPermission()) {
-      await _scheduleReminders(next.rhythm);
+  /// Saves [next] and reschedules reminders when needed. Reminders are switched off when the permission is refused.
+  Future<UserSettings> call(UserSettings previous, UserSettings next) async {
+    var saved = next;
+    if (next.remindsDifferentlyFrom(previous)) {
+      final turnedOn = next.areRemindersEnabled && !previous.areRemindersEnabled;
+      if (next.areRemindersEnabled && (turnedOn || next.rhythm != previous.rhythm)) {
+        if (!await _reminderGateway.requestPermission()) saved = next.copyWith(areRemindersEnabled: false);
+      }
+      await _scheduleReminders(saved);
     }
+    await _settingsGateway.save(saved);
+    return saved;
   }
 }
