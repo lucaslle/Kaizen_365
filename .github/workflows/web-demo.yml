@@ -33,6 +33,11 @@ jobs:
           --dart-define=KAIZEN_DEMO=true
           --no-web-resources-cdn
 
+      - name: Repair the icon font
+        run: |
+          pip install fonttools
+          python tool/resubset_icons.py
+
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
