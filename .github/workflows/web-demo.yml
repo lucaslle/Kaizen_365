@@ -44,7 +44,15 @@ jobs:
           java-version: 21
 
       - name: Build the Android app
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/release.jks
+            printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=kaizen365\nstoreFile=%s\n' \
+              "$KEYSTORE_PASSWORD" "$KEYSTORE_PASSWORD" "$PWD/android/release.jks" > android/key.properties
+          fi
           flutter build apk --release
           cp build/app/outputs/flutter-apk/app-release.apk build/web/kaizen365.apk
 

@@ -63,6 +63,8 @@ La démo est publiée automatiquement sur GitHub Pages à chaque push sur `main`
 flutter build web --release --dart-define=KAIZEN_DEMO=true --no-web-resources-cdn
 ```
 
+La même action compile l'APK Android, publié à côté de la démo (`kaizen365.apk`) et téléchargeable par le QR code de la page. Il est signé avec la clé de l'application, fournie par les secrets `KEYSTORE_BASE64` (le fichier `.jks` en base64) et `KEYSTORE_PASSWORD` du dépôt. En local, la signature se configure dans `android/key.properties`, ignoré par git ; sans ce fichier, les builds de release sont signés avec la clé de débogage.
+
 `KAIZEN_DEMO=true` ajoute les objectifs d'exemple au premier lancement. Sur le web, les objectifs sont stockés dans le navigateur, et les rappels comme le widget sont absents.
 
 ## Tests
