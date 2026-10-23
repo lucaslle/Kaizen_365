@@ -4,6 +4,8 @@ Application mobile de suivi d'objectifs annuels, en français. On fixe ses objec
 
 Tout tourne sur le téléphone : aucune API externe, aucun compte, aucune donnée envoyée sur Internet.
 
+**Démo en ligne : [lucaslle.github.io/Kaizen_365](https://lucaslle.github.io/Kaizen_365/)**. Sur ordinateur, l'application s'affiche dans un cadre d'iPhone ; sur téléphone, elle occupe tout l'écran. Des objectifs d'exemple sont déjà remplis et les données restent dans le navigateur.
+
 ## Fonctionnalités
 
 - **Onboarding** en 3 étapes : présentation, méthode, prénom et rythme des check-ins.
@@ -52,6 +54,16 @@ Sur un téléphone récent, installe `build/app/outputs/flutter-apk/app-arm64-v8
 ```bash
 flutter build appbundle
 ```
+
+## Démo web
+
+La démo est publiée automatiquement sur GitHub Pages à chaque push sur `main` (`.github/workflows/web-demo.yml`). Pour la construire en local :
+
+```bash
+flutter build web --release --dart-define=KAIZEN_DEMO=true --no-web-resources-cdn
+```
+
+`KAIZEN_DEMO=true` ajoute les objectifs d'exemple au premier lancement. Sur le web, les objectifs sont stockés dans le navigateur, et les rappels comme le widget sont absents.
 
 ## Tests
 

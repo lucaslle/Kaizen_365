@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../technical/clock/clock.dart';
 import '../../../../technical/localization/app_locale.dart';
 import '../../../../technical/theme/app_palette.dart';
 import '../../../../technical/theme/app_palettes.dart';
@@ -67,7 +69,7 @@ class ProfileView extends StatelessWidget {
             const SizedBox(height: 28),
             NameField(name: settings.name),
             const SizedBox(height: 28),
-            ReminderSettings(settings: settings, now: DateTime.now()),
+            ReminderSettings(settings: settings, now: GetIt.I<Clock>()()),
             const SizedBox(height: 28),
             ThemePicker(
               selected: AppPalettes.parse(settings.themeName),

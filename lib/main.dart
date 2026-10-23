@@ -3,6 +3,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'app/demo_seed.dart';
 import 'app/dependency_injection.dart';
 import 'app/kaizen_app.dart';
 import 'layers/functional/profile/domain/use_cases/get_settings_use_case.dart';
@@ -19,6 +20,8 @@ Future<void> main() async {
     initLanguageCode: AppLanguage.fallback,
   );
   await initializeDependencies();
-  AppLanguage.apply(AppLanguage.resolve(GetIt.instance<GetSettingsUseCase>()().languageCode));
+  final language = AppLanguage.resolve(GetIt.instance<GetSettingsUseCase>()().languageCode);
+  AppLanguage.apply(language);
+  await DemoSeed.seedOnce(language);
   runApp(const KaizenApp());
 }

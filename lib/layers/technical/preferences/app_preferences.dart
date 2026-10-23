@@ -9,6 +9,8 @@ enum PreferenceKey {
   reminderMinutes,
   areRemindersEnabled,
   objectiveSort,
+  objectivesJson,
+  isDemoSeeded,
   activeYear,
   yearReviews,
   isYearClosed,

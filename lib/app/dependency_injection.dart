@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -15,6 +16,7 @@ import '../layers/functional/objectives/domain/use_cases/sort_objectives_use_cas
 import '../layers/functional/objectives/presentation/cubit/objectives_use_cases.dart';
 
 import '../layers/functional/objectives/data/data_sources/objective_local_data_source.dart';
+import '../layers/functional/objectives/data/data_sources/objective_preferences_data_source.dart';
 import '../layers/functional/objectives/data/gateways/objective_gateway_impl.dart';
 import '../layers/functional/objectives/data/gateways/year_review_gateway_impl.dart';
 import '../layers/functional/objectives/domain/gateways/objective_gateway.dart';
@@ -31,6 +33,7 @@ import '../layers/functional/objectives/domain/use_cases/update_objective_use_ca
 import '../layers/functional/objectives/domain/use_cases/update_key_result_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/watch_active_year_use_case.dart';
 import '../layers/functional/objectives/domain/use_cases/watch_objectives_use_case.dart';
+import '../layers/functional/profile/data/gateways/no_reminder_gateway.dart';
 import '../layers/functional/profile/data/gateways/reminder_gateway_impl.dart';
 import '../layers/functional/profile/data/gateways/settings_gateway_impl.dart';
 import '../layers/functional/profile/domain/gateways/reminder_gateway.dart';
@@ -49,25 +52,34 @@ import '../layers/technical/preferences/app_preferences.dart';
 Future<void> initializeDependencies() async {
   final getIt = GetIt.instance;
   if (getIt.isRegistered<Clock>()) return;
-  final notifications = LocalNotifications(
-    () => NotificationTexts(
-      title: AppLanguage.text(AppLocale.reminderNotificationTitle),
-      body: AppLanguage.text(AppLocale.reminderNotificationBody),
-      channelName: AppLanguage.text(AppLocale.reminderChannelName),
-    ),
-  );
-  await notifications.initialize();
+  // The web demo has no scheduled notifications, so it never touches the plugin.
+  final ReminderGateway reminders;
+  if (kIsWeb) {
+    reminders = NoReminderGateway();
+  } else {
+    final notifications = LocalNotifications(
+      () => NotificationTexts(
+        title: AppLanguage.text(AppLocale.reminderNotificationTitle),
+        body: AppLanguage.text(AppLocale.reminderNotificationBody),
+        channelName: AppLanguage.text(AppLocale.reminderChannelName),
+      ),
+    );
+    await notifications.initialize();
+    reminders = ReminderGatewayImpl(notifications);
+  }
   getIt
     ..registerSingleton<Clock>(DateTime.now)
     ..registerSingleton<AppPreferences>(await AppPreferences.create())
     ..registerLazySingleton<ObjectiveGateway>(
-      () => ObjectiveGatewayImpl(ObjectiveLocalDataSource(getApplicationDocumentsDirectory)),
+      () => ObjectiveGatewayImpl(
+        kIsWeb ? ObjectivePreferencesDataSource(getIt()) : ObjectiveLocalDataSource(getApplicationDocumentsDirectory),
+      ),
     )
     ..registerLazySingleton<BackupGateway>(() => BackupGatewayImpl(getIt(), getIt(), getIt(), FileExchange(), getIt()))
     ..registerLazySingleton<ObjectivePreferencesGateway>(() => ObjectivePreferencesGatewayImpl(getIt()))
     ..registerLazySingleton<YearReviewGateway>(() => YearReviewGatewayImpl(getIt(), getIt()))
     ..registerLazySingleton<SettingsGateway>(() => SettingsGatewayImpl(getIt()))
-    ..registerLazySingleton<ReminderGateway>(() => ReminderGatewayImpl(notifications));
+    ..registerSingleton<ReminderGateway>(reminders);
   registerUseCases(getIt);
 }
 

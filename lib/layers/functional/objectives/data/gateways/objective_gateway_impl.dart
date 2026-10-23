@@ -2,13 +2,13 @@ import 'dart:async';
 
 import '../../domain/entities/objective.dart';
 import '../../domain/gateways/objective_gateway.dart';
-import '../data_sources/objective_local_data_source.dart';
+import '../data_sources/objective_store.dart';
 import '../models/objective_dto.dart';
 
 class ObjectiveGatewayImpl implements ObjectiveGateway {
   ObjectiveGatewayImpl(this._dataSource);
 
-  final ObjectiveLocalDataSource _dataSource;
+  final ObjectiveStore _dataSource;
   final _changes = StreamController<List<Objective>>.broadcast();
   List<Objective>? _cache;
   Future<void> _pendingWrite = Future.value();

@@ -1,12 +1,19 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Hands files to the phone's own share sheet and file picker: nothing leaves the phone unless the user sends it.
+/// In a browser, the file is downloaded instead.
 class FileExchange {
   Future<void> share(String fileName, String content) async {
+    if (kIsWeb) {
+      await FilePicker.saveFile(fileName: fileName, bytes: utf8.encode(content));
+      return;
+    }
     final file = File('${(await getTemporaryDirectory()).path}/$fileName');
     await file.writeAsString(content, flush: true);
     await SharePlus.instance.share(ShareParams(files: [XFile(file.path, mimeType: 'application/json')]));

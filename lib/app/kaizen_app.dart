@@ -16,6 +16,7 @@ import '../layers/technical/theme/app_theme.dart';
 import '../layers/technical/theme/widgets/toast.dart';
 import '../layers/functional/objectives/presentation/widgets/achievement_dialog.dart';
 import 'app_shell.dart';
+import 'demo_device_frame.dart';
 import 'home_widget_sync.dart';
 import 'tab_cubit.dart';
 
@@ -65,15 +66,17 @@ class KaizenApp extends StatelessWidget {
             themeMode: themeChoice == AppThemeName.auto ? ThemeMode.system : ThemeMode.light,
             supportedLocales: localization.supportedLocales,
             localizationsDelegates: localization.localizationsDelegates,
-            builder: (context, child) => ToastHost(
-              child: AnnotatedRegion<SystemUiOverlayStyle>(
-                value: Theme.of(context).brightness == Brightness.dark
-                    ? SystemUiOverlayStyle.light
-                    : SystemUiOverlayStyle.dark,
-                child: BlocListener<ObjectivesCubit, ObjectivesState>(
-                  listenWhen: (previous, current) => previous.noticeId != current.noticeId,
-                  listener: (context, state) => _onNotice(context, state),
-                  child: HomeWidgetSync(child: child!),
+            builder: (context, child) => DemoDeviceFrame(
+              child: ToastHost(
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: Theme.of(context).brightness == Brightness.dark
+                      ? SystemUiOverlayStyle.light
+                      : SystemUiOverlayStyle.dark,
+                  child: BlocListener<ObjectivesCubit, ObjectivesState>(
+                    listenWhen: (previous, current) => previous.noticeId != current.noticeId,
+                    listener: (context, state) => _onNotice(context, state),
+                    child: HomeWidgetSync(child: child!),
+                  ),
                 ),
               ),
             ),

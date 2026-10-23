@@ -1,19 +1,23 @@
 import 'dart:convert';
 import 'dart:io';
 
-class ObjectiveLocalDataSource {
+import 'objective_store.dart';
+
+class ObjectiveLocalDataSource implements ObjectiveStore {
   ObjectiveLocalDataSource(this._directory);
 
   final Future<Directory> Function() _directory;
 
   Future<File> get _file async => File('${(await _directory()).path}/objectives.json');
 
+  @override
   Future<List<Map<String, dynamic>>> read() async {
     final file = await _file;
     if (!await file.exists()) return [];
     return (jsonDecode(await file.readAsString()) as List).cast<Map<String, dynamic>>();
   }
 
+  @override
   Future<void> write(List<Map<String, dynamic>> objectives) async {
     final file = await _file;
     final temporary = File('${file.path}.tmp');

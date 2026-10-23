@@ -49,7 +49,9 @@ class CheckinSheet extends StatelessWidget {
             spacing: 4,
             children: [
               Text(
-                context.formatString(AppLocale.checkinOverline, [Formatters.shortDate(DateTime.now())]).toUpperCase(),
+                context.formatString(AppLocale.checkinOverline, [
+                  Formatters.shortDate(context.read<ObjectivesCubit>().state.now),
+                ]).toUpperCase(),
                 style: context.text.overline,
               ),
               Text(AppLocale.checkinTitle.getString(context), style: context.text.sheetTitle),
